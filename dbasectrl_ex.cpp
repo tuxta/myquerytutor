@@ -14,8 +14,6 @@ DbaseCtrl_Ex::DbaseCtrl_Ex(AppSettings *appSettings, QObject *parent) : QObject(
 
 bool DbaseCtrl_Ex::connect()
 {
-    qWarning() << "Now in connect EX function";
-
     dbase.close();
     dbase = QSqlDatabase::addDatabase("QSQLITE", dbaseName);
     QFileInfo fileInfo(appSettings->getDbPath() + QDir::separator() + dbaseName);
@@ -30,7 +28,6 @@ bool DbaseCtrl_Ex::connect()
         qWarning() << "Could not open Database";
         return false;
     }
-    qWarning() << "Database should be open";
 
     return true;
 }

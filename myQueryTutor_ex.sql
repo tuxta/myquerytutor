@@ -23,3 +23,5 @@ INSERT INTO ClubMembers (fName, sName, birthdate) VALUES
 ('Patricia', 'Nielson', '1997-02-14'),
 ('Christopher', 'Edwards', '1989-11-03')
 ;
+
+END TRANSACTION;

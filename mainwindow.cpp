@@ -114,17 +114,32 @@ void MainWindow::on_runQuery_button_clicked()
 {
     QVector<QVector<QString>> result = this->dbaseCtrl_Ex->runQuery(ui->queryTextArea->toPlainText());
 
-    // Create and populate a table with the result
-    // Add table to the result widget
-    QString output;
-    for(int i = 0; i < result.length(); ++i){
-        for(int j = 0; j < result[i].length(); ++j){
-            output += result[i][j] + "\t";
-        }
-        output += "\n";
-    }
+    int columns = result[1].length();
+    int rows = result.length();
 
-    ui->resultTextArea->setText(output);
+    qWarning() << "Colums " << columns;
+    qWarning() << "Rows " << rows;
+
+    ui->resultsTable->setColumnCount(columns);
+    ui->resultsTable->setRowCount(rows - 1);
+
+    ui->resultsTable->clear();
+
+    QStringList headerLabels;
+    for(int i = 0; i < columns; ++i){
+        headerLabels << result[0][i];
+    }
+    ui->resultsTable->setHorizontalHeaderLabels(headerLabels);
+
+    // Create and populate a table with the result
+    QTableWidgetItem *cell;
+    for(int i = 1; i < rows; ++i){
+        for(int j = 0; j < columns; ++j){
+            cell = new QTableWidgetItem;
+            cell->setText(result[i][j]);
+            ui->resultsTable->setItem(i - 1, j, cell);
+        }
+    }
 }
 
 void MainWindow::on_tableData_button_clicked()
@@ -156,7 +171,7 @@ void MainWindow::on_questionSelectTree_clicked(const QModelIndex &index)
         if(description != NULL)
             ui->questionTextArea->setText(description);
 
-        ui->resultTextArea->setText("");
+        ui->resultsTable->clear();
 
         // For now, clearing the query
         // In future, reload previous query if exists
