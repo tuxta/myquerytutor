@@ -14,6 +14,8 @@ class Ui_ExpectedResult(object):
         ExpectedResult.resize(640, 480)
         self.gridLayout = QtWidgets.QGridLayout(ExpectedResult)
         self.gridLayout.setObjectName("gridLayout")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
         self.resultTable = QtWidgets.QTableWidget(ExpectedResult)
         self.resultTable.setFrameShadow(QtWidgets.QFrame.Raised)
         self.resultTable.setLineWidth(0)
@@ -22,7 +24,12 @@ class Ui_ExpectedResult(object):
         self.resultTable.setColumnCount(0)
         self.resultTable.setRowCount(0)
         self.resultTable.verticalHeader().setVisible(False)
-        self.gridLayout.addWidget(self.resultTable, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.resultTable)
+        self.label_correct = QtWidgets.QLabel(ExpectedResult)
+        self.label_correct.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_correct.setObjectName("label_correct")
+        self.verticalLayout.addWidget(self.label_correct)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(ExpectedResult)
         QtCore.QMetaObject.connectSlotsByName(ExpectedResult)
@@ -30,4 +37,5 @@ class Ui_ExpectedResult(object):
     def retranslateUi(self, ExpectedResult):
         _translate = QtCore.QCoreApplication.translate
         ExpectedResult.setWindowTitle(_translate("ExpectedResult", "Expected Result"))
+        self.label_correct.setText(_translate("ExpectedResult", "TextLabel"))
 

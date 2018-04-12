@@ -24,6 +24,8 @@ class ExpectedResult(QDialog):
                 self.ui.resultTable.setItem(row_num, col_num, cell)
 
         if style == 1:
-            self.ui.resultTable.setStyleSheet('background-color: rgb(0, 255, 0)')
+            self.ui.label_correct.setStyleSheet('background-color: rgb(0, 255, 0)')
+            self.ui.label_correct.setText('Correct! \\o/')
         elif style == 2:
-            self.ui.resultTable.setStyleSheet('background-color: rgb(255, 100, 0)')
+            self.ui.label_correct.setStyleSheet('background-color: rgb(255, 100, 0)')
+            self.ui.label_correct.setText('Try Again :-(')

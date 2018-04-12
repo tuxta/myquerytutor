@@ -1,9 +1,10 @@
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
-from ui_mainwindow import Ui_MainWindow
-from database_controller import DatabaseController
+
 from lessondialog import LessonDialog
+from ui_mainwindow import Ui_MainWindow
 from expectedresult import ExpectedResult
+from database_controller import DatabaseController
 
 
 class MainWindow(QMainWindow):
@@ -87,13 +88,17 @@ class MainWindow(QMainWindow):
                 QTreeWidgetItem(topic_item).setText(0, question)
 
     def on_question_select_tree_clicked(self, index: QModelIndex):
+
         topic_item = index.parent()
+        if not topic_item.isValid():
+            return
+
         self.topic = topic_item.data()
         self.question = index.data()
 
         self.question_id, description = self.db_ctrl.get_question(self.topic, self.question)
         self.ui.questionTextArea.setText(description)
 
-        # For now, clearing the query
-        # In future, reload previous query if exists
-        self.ui.queryTextArea.clear()
+        # Load last query attempted for this question if on exists
+        last_query = self.db_ctrl.get_last_query(self.topic, self.question)
+        self.ui.queryTextArea.setText(last_query)

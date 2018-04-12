@@ -82,3 +82,9 @@ class DatabaseController:
             {'qid': qid}
         )
         return self.app_cursor.fetchone()[0]
+
+    def get_last_query(self, topic, question):
+        return ''
+
+    def set_question_query(self):
+        pass
