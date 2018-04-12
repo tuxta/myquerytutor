@@ -108,14 +108,14 @@ class DatabaseController:
         else:
             return result[0]
 
-    def set_question_query(self, query_string, topic, question):
+    def set_question_query(self, query_string, topic, question, success):
 
         # Check for insert or update
         exists = self.get_last_query(topic, question)
         if exists == '':
             self.app_cursor.execute(
                 """
-                    INSERT INTO Queries (question_id, topic_id, query)
+                    INSERT INTO Queries (question_id, topic_id, query, success)
                     VALUES (
                         (
                             SELECT Question.id
@@ -127,16 +127,16 @@ class DatabaseController:
                             FROM Topic
                             WHERE Topic.name = :topic
                         ),
-                        :query
+                        :query, :success
                     )
                 """,
-                {'question': question, 'topic': topic, 'query': query_string}
+                {'question': question, 'topic': topic, 'query': query_string, 'success': success}
             )
         else:
             self.app_cursor.execute(
                 """
                     UPDATE Queries
-                    SET query = :query
+                    SET query = :query, success = :success
                     WHERE question_id = (
                         SELECT Question.id
                         FROM Question
@@ -148,7 +148,32 @@ class DatabaseController:
                         WHERE Topic.name = :topic
                     )
                 """,
-                {'question': question, 'topic': topic, 'query': query_string}
+                {'question': question, 'topic': topic, 'query': query_string, 'success': success}
             )
 
         self.app_db.commit()
+
+    def is_successful(self, topic, question):
+        self.app_cursor.execute(
+            """
+                SELECT success
+                FROM Queries
+                WHERE question_id = (
+                        SELECT Question.id
+                        FROM Question
+                        WHERE Question.title = :question
+                    )
+                    AND topic_id = (
+                        SELECT Topic.id
+                        FROM Topic
+                        WHERE Topic.name = :topic
+                    )
+            """,
+            {'question': question, 'topic': topic}
+        )
+        result = self.app_cursor.fetchone()
+
+        if result is None:
+            return -1
+        else:
+            return result[0]

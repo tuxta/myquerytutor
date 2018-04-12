@@ -75,6 +75,9 @@ class Ui_MainWindow(object):
         self.help_button.setSizePolicy(sizePolicy)
         self.help_button.setObjectName("help_button")
         self.verticalLayout.addWidget(self.help_button)
+        self.progress_button = QtWidgets.QPushButton(self.frame_8)
+        self.progress_button.setObjectName("progress_button")
+        self.verticalLayout.addWidget(self.progress_button)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.verticalLayout_4.addWidget(self.frame_8)
         self.gridLayout_2.addLayout(self.verticalLayout_4, 0, 0, 1, 1)
@@ -158,7 +161,7 @@ class Ui_MainWindow(object):
         self.queryTextArea.setMinimumSize(QtCore.QSize(0, 0))
         self.queryTextArea.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
-        font.setPointSize(40)
+        font.setPointSize(30)
         font.setBold(True)
         font.setWeight(75)
         self.queryTextArea.setFont(font)
@@ -179,6 +182,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Topics"))
         self.help_button.setText(_translate("MainWindow", "Topic Lesson"))
+        self.progress_button.setText(_translate("MainWindow", "Progress"))
         self.label_question.setText(_translate("MainWindow", "Question"))
         self.expectedResult_button.setText(_translate("MainWindow", "Expected Result"))
         self.questionTextArea.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -191,6 +195,6 @@ class Ui_MainWindow(object):
         self.queryTextArea.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:40pt; font-weight:600; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
 

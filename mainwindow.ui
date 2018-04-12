@@ -114,6 +114,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="progress_button">
+             <property name="text">
+              <string>Progress</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>

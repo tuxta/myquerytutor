@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
 
 from lessondialog import LessonDialog
 from ui_mainwindow import Ui_MainWindow
+from progressdialog import ProgressDialog
 from expectedresult import ExpectedResult
 from database_controller import DatabaseController
 
@@ -27,6 +28,7 @@ class MainWindow(QMainWindow):
         self.ui.runQuery_button.clicked.connect(self.run_query_clicked)
         self.ui.expectedResult_button.clicked.connect(self.expected_result_clicked)
         self.ui.help_button.clicked.connect(self.help_clicked)
+        self.ui.progress_button.clicked.connect(self.show_progress)
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
@@ -44,8 +46,6 @@ class MainWindow(QMainWindow):
         query = self.ui.queryTextArea.toPlainText()
         if query != '':
 
-            self.db_ctrl.set_question_query(query, self.topic, self.question)
-
             column_names, row_data = self.db_ctrl.run_query(query)
 
             expected_result_query = self.db_ctrl.get_question_query(self.question_id)
@@ -53,8 +53,10 @@ class MainWindow(QMainWindow):
 
             if column_names == expected_names and row_data == expected_data:
                 result_color = 1
+                self.db_ctrl.set_question_query(query, self.topic, self.question, 1)
             else:
                 result_color = 2
+                self.db_ctrl.set_question_query(query, self.topic, self.question, 0)
 
             result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
             result_dialog.setModal(False)
@@ -105,3 +107,18 @@ class MainWindow(QMainWindow):
         # Load last query attempted for this question if on exists
         last_query = self.db_ctrl.get_last_query(self.topic, self.question)
         self.ui.queryTextArea.setText(last_query)
+
+    def show_progress(self):
+        questions_list = self.db_ctrl.get_questions_list()
+
+        results_map = {}
+        for topic in questions_list:
+            results_map[topic] = []
+            for question in questions_list[topic]:
+                success = self.db_ctrl.is_successful(topic, question)
+                results_map[topic].append(success)
+
+        progress_dialog = ProgressDialog(self, results_map)
+
+        progress_dialog.setModal(False)
+        progress_dialog.show()
