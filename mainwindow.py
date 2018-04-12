@@ -43,6 +43,9 @@ class MainWindow(QMainWindow):
     def run_query_clicked(self):
         query = self.ui.queryTextArea.toPlainText()
         if query != '':
+
+            self.db_ctrl.set_question_query(query, self.topic, self.question)
+
             column_names, row_data = self.db_ctrl.run_query(query)
 
             expected_result_query = self.db_ctrl.get_question_query(self.question_id)
