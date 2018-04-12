@@ -3,7 +3,7 @@ from ui_expectedresult import Ui_ExpectedResult
 
 
 class ExpectedResult(QDialog):
-    def __init__(self, parent, title, column_names, row_data):
+    def __init__(self, parent, title, column_names, row_data, style = 0):
         super(QDialog, self).__init__(parent)
 
         self.setModal(False)
@@ -22,3 +22,8 @@ class ExpectedResult(QDialog):
                 cell = QTableWidgetItem()
                 cell.setText(str(item))
                 self.ui.resultTable.setItem(row_num, col_num, cell)
+
+        if style == 1:
+            self.ui.resultTable.setStyleSheet('background-color: rgb(0, 255, 0)')
+        elif style == 2:
+            self.ui.resultTable.setStyleSheet('background-color: rgb(255, 100, 0)')

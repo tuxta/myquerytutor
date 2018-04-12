@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QModelIndex
-from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem, QTableWidgetItem)
+from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
 from ui_mainwindow import Ui_MainWindow
 from database_controller import DatabaseController
 from lessondialog import LessonDialog
@@ -12,6 +12,7 @@ class MainWindow(QMainWindow):
         
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.queryTextArea.setFontPointSize(15)
 
         self.db_ctrl = DatabaseController()
 
@@ -25,22 +26,35 @@ class MainWindow(QMainWindow):
         self.ui.runQuery_button.clicked.connect(self.run_query_clicked)
         self.ui.expectedResult_button.clicked.connect(self.expected_result_clicked)
         self.ui.help_button.clicked.connect(self.help_clicked)
-    
+
+        # Part of the horrible hack!!
+        self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
+
+    def reset_font_query_edit(self):
+        """
+        Horrible, Horrible, Horrible Hack!
+        Necessary to get around the font resetting if the current text is deleted
+        Every time something changes, the font size is set
+        """
+        self.ui.queryTextArea.setFontPointSize(15)
+        self.ui.queryTextArea.setFontWeight(-1)
+
     def run_query_clicked(self):
         query = self.ui.queryTextArea.toPlainText()
         if query != '':
             column_names, row_data = self.db_ctrl.run_query(query)
 
-            self.ui.resultsTable.setColumnCount(len(column_names))
-            self.ui.resultsTable.setRowCount(len(row_data))
-            self.ui.resultsTable.clear()
-            self.ui.resultsTable.setHorizontalHeaderLabels(column_names)
+            expected_result_query = self.db_ctrl.get_question_query(self.question_id)
+            expected_names, expected_data = self.db_ctrl.run_query(expected_result_query)
 
-            for row_num, row in enumerate(row_data):
-                for col_num, item in enumerate(row):
-                    cell = QTableWidgetItem()
-                    cell.setText(str(item))
-                    self.ui.resultsTable.setItem(row_num, col_num, cell)
+            if column_names == expected_names and row_data == expected_data:
+                result_color = 1
+            else:
+                result_color = 2
+
+            result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
+            result_dialog.setModal(False)
+            result_dialog.show()
 
     def expected_result_clicked(self):
         if self.question != '':
@@ -48,7 +62,7 @@ class MainWindow(QMainWindow):
             if query != '':
                 column_names, row_data = self.db_ctrl.run_query(query)
 
-                answer_dialog = ExpectedResult(self, self.question, column_names, row_data)
+                answer_dialog = ExpectedResult(self, 'Expected Result for ' + self.question, column_names, row_data)
 
                 answer_dialog.setModal(False)
                 answer_dialog.show()
@@ -82,4 +96,4 @@ class MainWindow(QMainWindow):
 
         # For now, clearing the query
         # In future, reload previous query if exists
-        self.ui.resultsTable.clear()
+        self.ui.queryTextArea.clear()
