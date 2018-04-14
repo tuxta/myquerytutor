@@ -84,12 +84,12 @@ class MainWindow(QMainWindow):
         self.ui.questionSelectTree.setColumnCount(1)
         self.ui.questionSelectTree.header().close()
 
-        questions_list = self.db_ctrl.get_questions_list()
+        questions_map, questions_list = self.db_ctrl.get_questions_list()
 
         for topic in questions_list:
             topic_item = QTreeWidgetItem(self.ui.questionSelectTree)
             topic_item.setText(0, topic)
-            for question in questions_list[topic]:
+            for question in questions_map[topic]:
                 QTreeWidgetItem(topic_item).setText(0, question)
 
     def on_question_select_tree_clicked(self, index: QModelIndex):
@@ -109,16 +109,9 @@ class MainWindow(QMainWindow):
         self.ui.queryTextArea.setText(last_query)
 
     def show_progress(self):
-        questions_list = self.db_ctrl.get_questions_list()
+        questions_map, questions_list = self.db_ctrl.get_questions_list()
 
-        results_map = {}
-        for topic in questions_list:
-            results_map[topic] = []
-            for question in questions_list[topic]:
-                success = self.db_ctrl.is_successful(topic, question)
-                results_map[topic].append(success)
-
-        progress_dialog = ProgressDialog(self, results_map)
+        progress_dialog = ProgressDialog(self, questions_map, questions_list, self.db_ctrl)
 
         progress_dialog.setModal(False)
         progress_dialog.show()

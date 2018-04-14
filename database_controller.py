@@ -16,9 +16,10 @@ class DatabaseController:
     def get_questions_list(self):
         self.app_cursor.execute(
             """
-                SELECT Topic.name, Question.title 
+                SELECT Topic.name, Question.title, Topic.position
                 FROM Topic, Question 
                 WHERE Question.topicId = Topic.id
+                ORDER BY Topic.position ASC
             """
         )
         questions_list = self.app_cursor.fetchall()
@@ -30,7 +31,12 @@ class DatabaseController:
             else:
                 questions_map[question[0]] = [question[1]]
 
-        return questions_map
+        questions = []
+        for item in questions_list:
+            if item[0] not in questions:
+                questions.append(item[0])
+
+        return questions_map, questions
 
     def get_lesson(self, topic):
         self.app_cursor.execute(

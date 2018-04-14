@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKitWidgets
 
 class Ui_LessonDialog(object):
     def setupUi(self, LessonDialog):
@@ -27,4 +27,3 @@ class Ui_LessonDialog(object):
         _translate = QtCore.QCoreApplication.translate
         LessonDialog.setWindowTitle(_translate("LessonDialog", "Dialog"))
 
-from PyQt5 import QtWebKitWidgets

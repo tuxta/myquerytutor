@@ -4,7 +4,7 @@ from ui_expectedresult import Ui_ExpectedResult
 
 
 class ProgressDialog(QDialog):
-    def __init__(self, parent, results_map):
+    def __init__(self, parent, questions_map, questions_list, db_ctrl):
         super(QDialog, self).__init__(parent)
 
         self.setModal(False)
@@ -15,13 +15,13 @@ class ProgressDialog(QDialog):
         self.ui.resultTable.horizontalHeader().setVisible(False)
 
         num_columns = 0
-        for topic in results_map:
-            length = len(results_map[topic])
+        for topic in questions_list:
+            length = len(questions_map[topic])
             if length > num_columns:
                 num_columns = length
 
         self.ui.resultTable.setColumnCount(num_columns + 1)
-        self.ui.resultTable.setRowCount(len(results_map))
+        self.ui.resultTable.setRowCount(len(questions_list))
         self.ui.resultTable.clear()
         self.ui.resultTable.setShowGrid(False)
 
@@ -29,17 +29,18 @@ class ProgressDialog(QDialog):
             self.ui.resultTable.setColumnWidth(i, 30)
 
         row_num = 0
-        for key, queries in results_map.items():
-
+        for topic in questions_list:
             key_cell = QTableWidgetItem()
-            key_cell.setText(key)
+            key_cell.setText(topic)
             self.ui.resultTable.setItem(row_num, 0, key_cell)
+            queries = questions_map[topic]
+            for col_num, question in enumerate(queries):
+                success = db_ctrl.is_successful(topic, question)
 
-            for col_num, item in enumerate(queries):
                 cell = QTableWidgetItem()
-                if item == 0:
+                if success == 0:
                     cell.setBackground(QColor(255, 100, 0))
-                elif item == 1:
+                elif success == 1:
                     cell.setBackground(QColor(0, 255, 0))
                 else:
                     cell.setBackground(QColor(200, 200, 200))
