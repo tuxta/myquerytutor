@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
         self.question = index.data()
 
         self.question_id, description = self.db_ctrl.get_question(self.topic, self.question)
-        self.ui.questionTextArea.setText(description)
+        self.ui.questionTextArea.setHtml(description)
 
         # Load last query attempted for this question if on exists
         last_query = self.db_ctrl.get_last_query(self.topic, self.question)
