@@ -1,0 +1,12 @@
+from myquerytutor.mainwindow import MainWindow
+from myquerytutor.ui_mainwindow import Ui_MainWindow
+
+from myquerytutor.lessondialog import LessonDialog
+from myquerytutor.ui_lessondialog import Ui_LessonDialog
+
+from myquerytutor.database_controller import DatabaseController
+
+from myquerytutor.expectedresult import ExpectedResult
+from myquerytutor.ui_expectedresult import Ui_ExpectedResult
+
+from myquerytutor.progressdialog import ProgressDialog

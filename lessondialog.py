@@ -1,5 +1,11 @@
 from PyQt5.QtWidgets import QDialog
-from ui_lessondialog import Ui_LessonDialog
+
+installer_building = False
+
+if installer_building:
+    from myquerytutor.ui_lessondialog import Ui_LessonDialog
+else:
+    from ui_lessondialog import Ui_LessonDialog
 
 
 class LessonDialog(QDialog):

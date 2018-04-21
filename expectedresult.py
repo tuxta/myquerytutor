@@ -1,5 +1,11 @@
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem
-from ui_expectedresult import Ui_ExpectedResult
+
+installer_building = False
+
+if installer_building:
+    from myquerytutor.ui_expectedresult import Ui_ExpectedResult
+else:
+    from ui_expectedresult import Ui_ExpectedResult
 
 
 class ExpectedResult(QDialog):

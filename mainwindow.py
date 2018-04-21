@@ -1,12 +1,20 @@
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
 
-from lessondialog import LessonDialog
-from ui_mainwindow import Ui_MainWindow
-from progressdialog import ProgressDialog
-from expectedresult import ExpectedResult
-from database_controller import DatabaseController
+installer_building = False
 
+if installer_building:
+    from myquerytutor.lessondialog import LessonDialog
+    from myquerytutor.ui_mainwindow import Ui_MainWindow
+    from myquerytutor.progressdialog import ProgressDialog
+    from myquerytutor.expectedresult import ExpectedResult
+    from myquerytutor.database_controller import DatabaseController
+else:
+    from lessondialog import LessonDialog
+    from ui_mainwindow import Ui_MainWindow
+    from progressdialog import ProgressDialog
+    from expectedresult import ExpectedResult
+    from database_controller import DatabaseController
 
 class MainWindow(QMainWindow):
     def __init__(self):

@@ -1,10 +1,13 @@
 import sqlite3
-
+import os
 
 class DatabaseController:
     def __init__(self):
-        self.app_db = sqlite3.connect('MQT_APP.sqlite')
-        self.ex_db = sqlite3.connect('MQT_EX.sqlite')
+        app_file_path = os.path.join(os.path.dirname(__file__), 'MQT_APP.sqlite')
+        self.app_db = sqlite3.connect(app_file_path)
+
+        ex_file_path = os.path.join(os.path.dirname(__file__), 'MQT_EX.sqlite')
+        self.ex_db = sqlite3.connect(ex_file_path)
 
         self.app_cursor = self.app_db.cursor()
         self.ex_cursor = self.ex_db.cursor()
