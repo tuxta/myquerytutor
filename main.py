@@ -2,7 +2,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 
-installer_building = True
+installer_building = False
 
 if installer_building:
     from myquerytutor.mainwindow import MainWindow

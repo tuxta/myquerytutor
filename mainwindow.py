@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
 
-installer_building = True
+installer_building = False
 
 if installer_building:
     from myquerytutor.lessondialog import LessonDialog
