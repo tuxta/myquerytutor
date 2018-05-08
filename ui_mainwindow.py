@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
-        self.questionTextArea = QtWebKitWidgets.QWebView(self.layoutWidget1)
+        self.questionTextArea = QtWebEngineWidgets.QWebEngineView(self.layoutWidget1)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -143,7 +143,7 @@ class Ui_MainWindow(object):
         self.questionTextArea.setFont(font)
         self.questionTextArea.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.questionTextArea.setInputMethodHints(QtCore.Qt.ImhMultiLine)
-        self.questionTextArea.setUrl(QtCore.QUrl("about:blank"))
+        self.questionTextArea.setProperty("url", QtCore.QUrl("about:blank"))
         self.questionTextArea.setObjectName("questionTextArea")
         self.verticalLayout_3.addWidget(self.questionTextArea)
         self.layoutWidget2 = QtWidgets.QWidget(self.splitter)
@@ -211,7 +211,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.splitter_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 30))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 21))
         self.menuBar.setObjectName("menuBar")
         MainWindow.setMenuBar(self.menuBar)
 
@@ -231,7 +231,7 @@ class Ui_MainWindow(object):
         self.queryTextArea.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
 
-from PyQt5 import QtWebKitWidgets
+from PyQt5 import QtWebEngineWidgets

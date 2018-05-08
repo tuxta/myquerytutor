@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 
-installer_building = False
+installer_building = True
 
 if installer_building:
     from myquerytutor.ui_expectedresult import Ui_ExpectedResult

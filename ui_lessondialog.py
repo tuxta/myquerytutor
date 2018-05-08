@@ -2,11 +2,11 @@
 
 # Form implementation generated from reading ui file 'lessondialog.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKitWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_LessonDialog(object):
     def setupUi(self, LessonDialog):
@@ -15,8 +15,8 @@ class Ui_LessonDialog(object):
         LessonDialog.resize(640, 480)
         self.gridLayout = QtWidgets.QGridLayout(LessonDialog)
         self.gridLayout.setObjectName("gridLayout")
-        self.webView = QtWebKitWidgets.QWebView(LessonDialog)
-        self.webView.setUrl(QtCore.QUrl("about:blank"))
+        self.webView = QtWebEngineWidgets.QWebEngineView(LessonDialog)
+        self.webView.setProperty("url", QtCore.QUrl("about:blank"))
         self.webView.setObjectName("webView")
         self.gridLayout.addWidget(self.webView, 0, 0, 1, 1)
 
@@ -27,3 +27,4 @@ class Ui_LessonDialog(object):
         _translate = QtCore.QCoreApplication.translate
         LessonDialog.setWindowTitle(_translate("LessonDialog", "Dialog"))
 
+from PyQt5 import QtWebEngineWidgets
