@@ -84,6 +84,7 @@ class MainWindow(QMainWindow):
                 answer_dialog = ExpectedResult(self, 'Expected Result for ' + self.question, column_names, row_data)
 
                 answer_dialog.setModal(False)
+                answer_dialog.ui.label_correct.setText('')
                 answer_dialog.show()
     
     def help_clicked(self):
@@ -127,4 +128,5 @@ class MainWindow(QMainWindow):
         progress_dialog = ProgressDialog(self, questions_map, questions_list, self.db_ctrl)
 
         progress_dialog.setModal(False)
+        progress_dialog.ui.label_correct.setText('')
         progress_dialog.show()
