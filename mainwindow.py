@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QModelIndex
+from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
 
 installer_building = False
@@ -15,6 +15,7 @@ else:
     from progressdialog import ProgressDialog
     from expectedresult import ExpectedResult
     from database_controller import DatabaseController
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -37,6 +38,10 @@ class MainWindow(QMainWindow):
         self.ui.expectedResult_button.clicked.connect(self.expected_result_clicked)
         self.ui.help_button.clicked.connect(self.help_clicked)
         self.ui.progress_button.clicked.connect(self.show_progress)
+
+        # Disable the right click menu in the WebEngineView
+        self.ui.questionTextArea.setContextMenuPolicy(Qt.NoContextMenu)
+        self.ui.questionTextArea.setContextMenuPolicy(Qt.PreventContextMenu)
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)

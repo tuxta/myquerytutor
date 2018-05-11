@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import Qt
 
 installer_building = False
 
@@ -19,3 +20,6 @@ class LessonDialog(QDialog):
         self.setWindowTitle(title)
         self.ui.webView.setHtml(content)
 
+        # Disable the right click menu in the WebEngineView
+        self.ui.webView.setContextMenuPolicy(Qt.NoContextMenu)
+        self.ui.webView.setContextMenuPolicy(Qt.PreventContextMenu)
