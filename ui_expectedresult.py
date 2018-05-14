@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'expectedresult.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -29,6 +29,15 @@ class Ui_ExpectedResult(object):
         self.label_correct.setAlignment(QtCore.Qt.AlignCenter)
         self.label_correct.setObjectName("label_correct")
         self.verticalLayout.addWidget(self.label_correct)
+        self.textBrowser = QtWidgets.QTextBrowser(ExpectedResult)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textBrowser.sizePolicy().hasHeightForWidth())
+        self.textBrowser.setSizePolicy(sizePolicy)
+        self.textBrowser.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.textBrowser.setObjectName("textBrowser")
+        self.verticalLayout.addWidget(self.textBrowser)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(ExpectedResult)

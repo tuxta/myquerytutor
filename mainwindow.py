@@ -73,10 +73,10 @@ class MainWindow(QMainWindow):
 
             # Compare the exemplar query with the user query to identify errors
             query_comparison_html = self.compare_queries(expected_result_query, query)
-            print(query_comparison_html)
 
             result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
             result_dialog.setModal(False)
+            result_dialog.ui.textBrowser.setHtml(query_comparison_html)
             result_dialog.show()
 
     def expected_result_clicked(self):
@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
 
                 answer_dialog.setModal(False)
                 answer_dialog.ui.label_correct.setText('')
+                answer_dialog.ui.textBrowser.deleteLater()
                 answer_dialog.show()
     
     def help_clicked(self):
@@ -133,6 +134,7 @@ class MainWindow(QMainWindow):
 
         progress_dialog.setModal(False)
         progress_dialog.ui.label_correct.setText('')
+        progress_dialog.ui.textBrowser.deleteLater()
         progress_dialog.show()
 
     def compare_queries(self, exemplar_query, user_query):
@@ -156,8 +158,8 @@ class MainWindow(QMainWindow):
         # Step through the user_query checking if each word
         # is in the exemplar. Set color and add to html string
 
-        query_list = exemplar_query.split()
-        exemplar_list = user_query.split()
+        exemplar_list = exemplar_query.split()
+        query_list = user_query.split()
         html_string_list.append(html_header)
 
         for word in query_list:
