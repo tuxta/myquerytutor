@@ -71,6 +71,10 @@ class MainWindow(QMainWindow):
                 result_color = 2
                 self.db_ctrl.set_question_query(query, self.topic, self.question, 0)
 
+            # Compare the exemplar query with the user query to identify errors
+            query_comparison_html = self.compare_queries(expected_result_query, query)
+            print(query_comparison_html)
+
             result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
             result_dialog.setModal(False)
             result_dialog.show()
@@ -130,3 +134,43 @@ class MainWindow(QMainWindow):
         progress_dialog.setModal(False)
         progress_dialog.ui.label_correct.setText('')
         progress_dialog.show()
+
+    def compare_queries(self, exemplar_query, user_query):
+
+        html_string_list = []
+
+        # Set style rules
+        html_header = '''
+                    <style>
+                      .Correct {
+                        color:green;
+                      }
+                      .Incorrect {
+                        color:red;
+                      }
+                    </style>
+                    
+                    <html>
+                    '''
+        # Break both queries into lists
+        # Step through the user_query checking if each word
+        # is in the exemplar. Set color and add to html string
+
+        query_list = exemplar_query.split()
+        exemplar_list = user_query.split()
+        html_string_list.append(html_header)
+
+        for word in query_list:
+            if word in exemplar_list:
+                html_string_list.append('<span class=Correct>' + word + '</span>')
+            else:
+                html_string_list.append('<span class=Incorrect>' + word + '</span>')
+
+        html_string_list.append('''
+                                
+                                </html>
+                                ''')
+
+        html_string = ' '.join(html_string_list)
+
+        return html_string
