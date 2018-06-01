@@ -43,6 +43,61 @@ class MainWindow(QMainWindow):
         self.ui.questionTextArea.setContextMenuPolicy(Qt.NoContextMenu)
         self.ui.questionTextArea.setContextMenuPolicy(Qt.PreventContextMenu)
 
+        # Set the initial Webview content - Credits
+        self.ui.questionTextArea.setHtml('''
+                                         <style>
+
+                                         body {
+                                           background-color: white;
+                                         }
+
+                                         h1 {
+                                           text-align:center;
+                                           text-decoration:underline;
+                                           font-weight:bold;
+                                         }
+                                         
+                                         .syntaxbox {
+                                           box-sizing: border-box;
+                                           border: 4px solid black;
+                                           float: center;
+                                           font: italic bold 15px Monospace;
+                                           background: wheat;
+                                           padding: 20px;
+                                           margin-left: 40px;
+                                           margin-right: 40px;
+                                           text-align: center;
+                                         }
+                                         
+                                         .examplebox {
+                                           box-sizing: border-box;
+                                           border: 4px solid black;
+                                           float: center;
+                                           font: bold 16px Arial;
+                                           background: PaleTurquoise;
+                                           padding: 20px;
+                                           margin-left: 40px;
+                                           margin-right: 40px;
+                                           text-align: center;
+                                         }
+                                         
+                                         </style>
+                                         
+                                         <body>
+                                           <h1>My Query Tutor</h1>
+                                           <div class="syntaxbox">
+                                             <p>Software Developer</p>
+                                             Steven Tucker
+                                           </div>
+                                           
+                                           <div class="examplebox">
+                                             <p>Content Developer</p>
+                                             Peter Darcy
+                                           </div>
+                                         
+                                         </body>
+                                         ''')
+
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
 
