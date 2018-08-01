@@ -17,12 +17,12 @@ else:
     from database_controller import DatabaseController
 
 
-class MainWindow(QMainWindow):
+class MainWindow:
     def __init__(self):
-        super(MainWindow, self).__init__()
-        
+
+        self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self.main_win)
         self.ui.queryTextArea.setFontPointSize(15)
 
         self.db_ctrl = DatabaseController()
@@ -100,6 +100,9 @@ class MainWindow(QMainWindow):
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
+
+    def show(self):
+        self.main_win.show()
 
     def reset_font_query_edit(self):
         """
