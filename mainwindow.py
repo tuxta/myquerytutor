@@ -132,7 +132,7 @@ class MainWindow:
             # Compare the exemplar query with the user query to identify errors
             query_comparison_html = self.compare_queries(expected_result_query, query)
 
-            result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
+            result_dialog = ExpectedResult(self.main_win, self.question, column_names, row_data, result_color)
             result_dialog.setModal(False)
             result_dialog.ui.textBrowser.setHtml(query_comparison_html)
             result_dialog.show()
@@ -143,7 +143,7 @@ class MainWindow:
             if query != '':
                 column_names, row_data = self.db_ctrl.run_query(query)
 
-                answer_dialog = ExpectedResult(self, 'Expected Result for ' + self.question, column_names, row_data)
+                answer_dialog = ExpectedResult(self.main_win, 'Expected Result for ' + self.question, column_names, row_data)
 
                 answer_dialog.setModal(False)
                 answer_dialog.ui.label_correct.setText('')
@@ -153,7 +153,7 @@ class MainWindow:
     def help_clicked(self):
         if not self.topic == '':
             lesson = self.db_ctrl.get_lesson(self.topic)
-            lesson_dialog = LessonDialog(self, self.topic, lesson)
+            lesson_dialog = LessonDialog(self.main_win, self.topic, lesson)
             lesson_dialog.setModal(False)
             lesson_dialog.show()
 
@@ -188,7 +188,7 @@ class MainWindow:
     def show_progress(self):
         questions_map, questions_list = self.db_ctrl.get_questions_list()
 
-        progress_dialog = ProgressDialog(self, questions_map, questions_list, self.db_ctrl)
+        progress_dialog = ProgressDialog(self.main_win, questions_map, questions_list, self.db_ctrl)
 
         progress_dialog.setModal(False)
         progress_dialog.ui.label_correct.setText('')
