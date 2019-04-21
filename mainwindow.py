@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt, QModelIndex
-from PyQt5.QtWidgets import (QMainWindow, QTreeWidgetItem)
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
 
 installer_building = False
 
@@ -9,23 +10,29 @@ if installer_building:
     from myquerytutor.progressdialog import ProgressDialog
     from myquerytutor.expectedresult import ExpectedResult
     from myquerytutor.database_controller import DatabaseController
+    from myquerytutor.appsettings import AppSettings
 else:
     from lessondialog import LessonDialog
     from ui_mainwindow import Ui_MainWindow
     from progressdialog import ProgressDialog
     from expectedresult import ExpectedResult
     from database_controller import DatabaseController
+    from appsettings import AppSettings
 
 
 class MainWindow:
     def __init__(self):
 
+        self.splash_screen = QSplashScreen()
+        self.splash_screen.setPixmap(QPixmap('splash.png'))
+        self.splash_screen.show()
         self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
         self.ui.queryTextArea.setFontPointSize(15)
 
-        self.db_ctrl = DatabaseController()
+        self.app_settings = AppSettings()
+        self.db_ctrl = self.initial_checks()
 
         self.build_selection_tree()
         self.topic = ''
@@ -100,6 +107,17 @@ class MainWindow:
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
+
+        self.main_win.restoreGeometry(self.app_settings.get_geometry())
+        self.splash_screen.finish(self.main_win)
+
+    def __del__(self):
+        self.app_settings.set_geometry(self.main_win.saveGeometry())
+
+    def initial_checks(self):
+        db_ctrl = DatabaseController()
+        db_ctrl.connect()
+        return db_ctrl
 
     def show(self):
         self.main_win.show()
