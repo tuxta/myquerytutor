@@ -107,12 +107,18 @@ class MainWindow:
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
+        if self.app_settings.has_settings():
+            self.main_win.restoreGeometry(self.app_settings.get_geometry())
+            self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
+            self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
 
-        self.main_win.restoreGeometry(self.app_settings.get_geometry())
         self.splash_screen.finish(self.main_win)
 
     def __del__(self):
-        self.app_settings.set_geometry(self.main_win.saveGeometry())
+        self.app_settings.set_geometry(self.main_win.saveGeometry(),
+                                       self.ui.splitter.sizes(),
+                                       self.ui.splitter_2.sizes()
+                                       )
 
     def initial_checks(self):
         db_ctrl = DatabaseController()
