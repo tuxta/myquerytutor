@@ -1,5 +1,4 @@
 from PyQt5.QtCore import QSettings
-import array
 
 
 class AppSettings:
@@ -9,7 +8,8 @@ class AppSettings:
     def has_settings(self):
         if self.settings.contains('MainWindow/geometry'):
             return True
-        return False
+        else:
+            return False
 
     def set_geometry(self, main_win, splitter_1, splitter_2):
         self.settings.setValue("MainWindow/geometry", main_win)

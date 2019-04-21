@@ -2,6 +2,8 @@ from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
 
+from first_run_wiz import FirstRunWiz
+
 installer_building = False
 
 if installer_building:
@@ -111,6 +113,13 @@ class MainWindow:
             self.main_win.restoreGeometry(self.app_settings.get_geometry())
             self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
             self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
+        else:
+            print("Here we go")
+            wiz = FirstRunWiz()
+            wiz.setMinimumWidth(650)
+            self.splash_screen.hide()
+            wiz.exec()
+            self.splash_screen.show()
 
         self.splash_screen.finish(self.main_win)
 
