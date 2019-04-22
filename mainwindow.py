@@ -114,12 +114,13 @@ class MainWindow:
             self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
             self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
         else:
-            print("Here we go")
             wiz = FirstRunWiz()
             wiz.setMinimumWidth(650)
             self.splash_screen.hide()
             wiz.exec()
             self.splash_screen.show()
+            self.ui.splitter.setSizes([393, 161])
+            self.ui.splitter_2.setSizes([206, 565])
 
         self.splash_screen.finish(self.main_win)
 
