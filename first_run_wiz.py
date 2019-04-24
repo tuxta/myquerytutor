@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPalette
+from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPalette, QPixmap
 from PyQt5.QtWidgets import QWizard
 
 
@@ -10,6 +10,10 @@ class FirstRunWiz(QWizard):
         layout = [QWizard.Stretch, QWizard.BackButton, QWizard.NextButton, QWizard.FinishButton, QWizard.CancelButton]
         self.setButtonLayout(layout)
         self.setOptions(self.NoBackButtonOnStartPage)
+
+        self.setWizardStyle(QWizard.ModernStyle)
+        self.setWindowTitle("MQT First Run Wizard")
+        self.setPixmap(QWizard.WatermarkPixmap, QPixmap('watermark.png'))
 
         self.first_name = ''
         self.surname = ''
