@@ -24,3 +24,7 @@ class AppSettings:
 
     def get_splitter_2_geometry(self):
         return self.settings.value('MainWindow/splitter_2', [], int)
+
+    def set_user_name(self, first_name, surname):
+        self.settings.setValue("User/name", first_name + surname)
+

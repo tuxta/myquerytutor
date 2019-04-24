@@ -1,3 +1,4 @@
+import sys
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
@@ -28,14 +29,14 @@ class MainWindow:
         self.splash_screen = QSplashScreen()
         self.splash_screen.setPixmap(QPixmap('splash.png'))
         self.splash_screen.show()
+
         self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
         self.ui.queryTextArea.setFontPointSize(15)
-
         self.app_settings = AppSettings()
+        self.settings_cancelled = False
         self.db_ctrl = self.initial_checks()
-
         self.build_selection_tree()
         self.topic = ''
         self.question = ''
@@ -114,10 +115,13 @@ class MainWindow:
             self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
             self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
         else:
-            wiz = FirstRunWiz()
+            wiz = FirstRunWiz(self.app_settings)
             wiz.setMinimumWidth(650)
             self.splash_screen.hide()
-            wiz.exec()
+            wiz_result = wiz.exec()
+            if wiz_result == 0:
+                self.settings_cancelled = True
+                sys.exit()
             self.splash_screen.show()
             self.ui.splitter.setSizes([393, 161])
             self.ui.splitter_2.setSizes([206, 565])
@@ -125,10 +129,11 @@ class MainWindow:
         self.splash_screen.finish(self.main_win)
 
     def __del__(self):
-        self.app_settings.set_geometry(self.main_win.saveGeometry(),
-                                       self.ui.splitter.sizes(),
-                                       self.ui.splitter_2.sizes()
-                                       )
+        if not self.settings_cancelled:
+            self.app_settings.set_geometry(self.main_win.saveGeometry(),
+                                           self.ui.splitter.sizes(),
+                                           self.ui.splitter_2.sizes()
+                                           )
 
     def initial_checks(self):
         db_ctrl = DatabaseController()
