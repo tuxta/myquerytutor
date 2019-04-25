@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import json
 
 
 class DatabaseController:
@@ -196,4 +197,23 @@ class DatabaseController:
             return result[0]
 
     def get_progress_json(self):
-        return "We have some progress \o/"
+        self.app_cursor.execute(
+            """
+                SELECT topic.name, q.title, qry.success
+                FROM topic, Question AS q, Queries AS qry
+                WHERE qry.topic_id = topic.id
+                AND qry.question_id = q.id
+                ORDER BY topic.name
+            """
+        )
+        result = self.app_cursor.fetchall()
+        progress_map = {}
+        for attempt in result:
+            if attempt[0] in progress_map:
+                progress_map[attempt[0]][attempt[1]] = attempt[2]
+            else:
+                progress_map[attempt[0]] = {attempt[1]: attempt[2]}
+
+        json_str = json.dumps(progress_map)
+
+        return json_str
