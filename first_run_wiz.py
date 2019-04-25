@@ -19,11 +19,16 @@ class FirstRunWiz(QWizard):
         self.surname = ''
         self.first_name_edit = None
         self.surname_edit = None
-        self.first_attempt_name = True
+
+        self.teacher_name = ''
+        self.teacher_email = ''
+        self.teacher_name_edit = None
+        self.teacher_email_edit = None
 
         self.setPage(1, self.intro())
         self.setPage(2, self.user_info())
-        self.setPage(3, self.complete())
+        self.setPage(3, self.teacher_info())
+        self.setPage(4, self.complete())
 
         self.setStartId(1)
 
@@ -47,6 +52,23 @@ won't have to see this again :-D
 
         return page
 
+    def teacher_info(self):
+        page = QWizardPage()
+        page.setTitle("Your details")
+        page.setSubTitle("Complete the form and click next")
+        layout = QGridLayout(page)
+        teacher_name_label = QLabel("Teacher Name    ")
+        self.teacher_name_edit = QLineEdit()
+        teacher_email_label = QLabel("Teacher Email   ")
+        self.teacher_email_edit = QLineEdit()
+
+        layout.addWidget(teacher_name_label, 0, 0)
+        layout.addWidget(self.teacher_name_edit, 0, 1)
+        layout.addWidget(teacher_email_label, 1, 0)
+        layout.addWidget(self.teacher_email_edit, 1, 1)
+
+        return page
+
     def user_info(self):
         page = QWizardPage()
         page.setTitle("Your details")
@@ -57,10 +79,10 @@ won't have to see this again :-D
         surname_label = QLabel("Surname     ")
         self.surname_edit = QLineEdit()
 
-        layout.addWidget(first_name_label, 0, 0)
-        layout.addWidget(self.first_name_edit, 0, 1)
-        layout.addWidget(surname_label, 1, 0)
-        layout.addWidget(self.surname_edit, 1, 1)
+        layout.addWidget(first_name_label, 1, 0)
+        layout.addWidget(self.first_name_edit, 1, 1)
+        layout.addWidget(surname_label, 2, 0)
+        layout.addWidget(self.surname_edit, 2, 1)
 
         return page
 
@@ -88,6 +110,13 @@ won't have to see this again :-D
                 return 2
             self.app_settings.set_user_name(self.first_name, self.surname)
             return 3
+        elif current_id == 3:
+            self.check_teacher_entry()
+            if len(self.teacher_name) == 0 or \
+                    len(self.teacher_email) == 0:
+                return 2
+            self.app_settings.set_teacher_info(self.teacher_name, self.teacher_email)
+            return 4
         else:
             return -1
 
@@ -110,3 +139,23 @@ won't have to see this again :-D
             palette = self.surname_edit.palette()
             palette.setColor(QPalette.Base, Qt.white)
             self.surname_edit.setPalette(palette)
+
+    def check_teacher_entry(self):
+        self.teacher_name = self.teacher_name_edit.text()
+        self.teacher_email = self.teacher_email_edit.text()
+        if len(self.teacher_name) == 0:
+            palette = self.teacher_name_edit.palette()
+            palette.setColor(QPalette.Base, Qt.yellow)
+            self.teacher_name_edit.setPalette(palette)
+        else:
+            palette = self.teacher_name_edit.palette()
+            palette.setColor(QPalette.Base, Qt.white)
+            self.teacher_name_edit.setPalette(palette)
+        if len(self.teacher_email) == 0:
+            palette = self.teacher_email_edit.palette()
+            palette.setColor(QPalette.Base, Qt.yellow)
+            self.teacher_email_edit.setPalette(palette)
+        else:
+            palette = self.teacher_email_edit.palette()
+            palette.setColor(QPalette.Base, Qt.white)
+            self.teacher_email_edit.setPalette(palette)

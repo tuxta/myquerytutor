@@ -26,5 +26,14 @@ class AppSettings:
         return self.settings.value('MainWindow/splitter_2', [], int)
 
     def set_user_name(self, first_name, surname):
-        self.settings.setValue("User/name", first_name + surname)
+        self.settings.setValue("User/name", first_name + " " + surname)
 
+    def get_user_name(self):
+        return self.settings.value("User/name")
+
+    def set_teacher_info(self, teacher_name, teacher_email):
+        self.settings.setValue("Teacher/name", teacher_name)
+        self.settings.setValue("Teacher/email", teacher_email)
+
+    def get_teacher_email(self):
+        return self.settings.value("Teacher/email")

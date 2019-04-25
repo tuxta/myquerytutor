@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -93,6 +94,9 @@ class Ui_MainWindow(object):
         self.progress_button.setSizePolicy(sizePolicy)
         self.progress_button.setObjectName("progress_button")
         self.verticalLayout.addWidget(self.progress_button)
+        self.sendButton = QtWidgets.QPushButton(self.frame_8)
+        self.sendButton.setObjectName("sendButton")
+        self.verticalLayout.addWidget(self.sendButton)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.verticalLayout_4.addWidget(self.frame_8)
         self.splitter = QtWidgets.QSplitter(self.splitter_2)
@@ -211,7 +215,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.splitter_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 30))
         self.menuBar.setObjectName("menuBar")
         MainWindow.setMenuBar(self.menuBar)
 
@@ -223,7 +227,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Topics"))
         self.help_button.setText(_translate("MainWindow", "Topic Lesson"))
-        self.progress_button.setText(_translate("MainWindow", "Progress"))
+        self.progress_button.setText(_translate("MainWindow", "Show Progress"))
+        self.sendButton.setText(_translate("MainWindow", "Send Progress"))
         self.label_question.setText(_translate("MainWindow", "Question"))
         self.label_query.setText(_translate("MainWindow", "Query"))
         self.expectedResult_button.setText(_translate("MainWindow", "Expected Result"))
@@ -231,7 +236,8 @@ class Ui_MainWindow(object):
         self.queryTextArea.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
+
 
 from PyQt5 import QtWebEngineWidgets

@@ -1,4 +1,5 @@
 import sys
+import webbrowser
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
@@ -48,6 +49,7 @@ class MainWindow:
         self.ui.expectedResult_button.clicked.connect(self.expected_result_clicked)
         self.ui.help_button.clicked.connect(self.help_clicked)
         self.ui.progress_button.clicked.connect(self.show_progress)
+        self.ui.sendButton.clicked.connect(self.send_progress)
 
         # Disable the right click menu in the WebEngineView
         self.ui.questionTextArea.setContextMenuPolicy(Qt.NoContextMenu)
@@ -233,6 +235,24 @@ class MainWindow:
         progress_dialog.ui.label_correct.setText('')
         progress_dialog.ui.textBrowser.deleteLater()
         progress_dialog.show()
+
+    def send_progress(self):
+        eml_to = self.app_settings.get_teacher_email()
+        eml_subject = "MyQueryTutor progress for {}".format(self.app_settings.get_user_name())
+        eml_subject = eml_subject.replace(' ', '%20')
+
+        progress_str = self.db_ctrl.get_progress_json()
+
+        eml_body = """
+Sent by My Query Tutor%0d%0a - Current progress for {}%0d%0a{}""".format(
+            self.app_settings.get_user_name(),
+            progress_str
+        )
+
+        eml_body = eml_body.replace(' ', '%20')
+
+        wb = webbrowser.get('Firefox')
+        wb.open('mailto:?to=' + eml_to + '&subject=' + eml_subject + '&body=' + eml_body, new=1)
 
     def compare_queries(self, exemplar_query, user_query):
 

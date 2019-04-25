@@ -194,3 +194,6 @@ class DatabaseController:
             return -1
         else:
             return result[0]
+
+    def get_progress_json(self):
+        return "We have some progress \o/"
