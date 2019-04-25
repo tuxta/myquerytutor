@@ -1,4 +1,6 @@
-from PyQt5.QtCore import Qt
+import os
+import shutil
+from PyQt5.QtCore import Qt, QStandardPaths
 from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPalette, QPixmap
 from PyQt5.QtWidgets import QWizard
 
@@ -116,6 +118,7 @@ won't have to see this again :-D
                     len(self.teacher_email) == 0:
                 return 2
             self.app_settings.set_teacher_info(self.teacher_name, self.teacher_email)
+            self.make_local_database()
             return 4
         else:
             return -1
@@ -159,3 +162,8 @@ won't have to see this again :-D
             palette = self.teacher_email_edit.palette()
             palette.setColor(QPalette.Base, Qt.white)
             self.teacher_email_edit.setPalette(palette)
+
+    def make_local_database(self):
+        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+        file_name = os.path.join(dir_path, 'MQT_APP.sqlite')
+        shutil.copy('MQT_APP.sqlite', file_name)

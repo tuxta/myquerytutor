@@ -37,6 +37,18 @@ class MainWindow:
         self.ui.queryTextArea.setFontPointSize(15)
         self.app_settings = AppSettings()
         self.settings_cancelled = False
+
+        first_run = False
+        if not self.app_settings.has_settings():
+            first_run = True
+            wiz = FirstRunWiz(self.app_settings)
+            wiz.setMinimumWidth(650)
+            self.splash_screen.hide()
+            wiz_result = wiz.exec()
+            if wiz_result == 0:
+                self.settings_cancelled = True
+                sys.exit()
+
         self.db_ctrl = self.initial_checks()
         self.build_selection_tree()
         self.topic = ''
@@ -112,18 +124,12 @@ class MainWindow:
 
         # Part of the horrible hack!!
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
-        if self.app_settings.has_settings():
+
+        if not first_run:
             self.main_win.restoreGeometry(self.app_settings.get_geometry())
             self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
             self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
         else:
-            wiz = FirstRunWiz(self.app_settings)
-            wiz.setMinimumWidth(650)
-            self.splash_screen.hide()
-            wiz_result = wiz.exec()
-            if wiz_result == 0:
-                self.settings_cancelled = True
-                sys.exit()
             self.splash_screen.show()
             self.ui.splitter.setSizes([393, 161])
             self.ui.splitter_2.setSizes([206, 565])
