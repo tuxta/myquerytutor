@@ -120,6 +120,11 @@ class MainWindow:
                                              <p>Content Developer</p>
                                              Peter Darcy
                                            </div>
+                                           
+                                           <div class="syntaxbox">
+                                             <p>Content Designer</p>
+                                             Keshlan Chinia
+                                           </div>
                                          
                                          </body>
                                          ''')

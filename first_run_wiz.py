@@ -57,7 +57,7 @@ won't have to see this again :-D
 
     def teacher_info(self):
         page = QWizardPage()
-        page.setTitle("Your details")
+        page.setTitle("Teacher details")
         page.setSubTitle("Complete the form and click next")
         layout = QGridLayout(page)
         teacher_name_label = QLabel("Teacher Name    ")
