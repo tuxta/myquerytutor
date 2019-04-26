@@ -1,8 +1,9 @@
 import sys
 import webbrowser
+from shutil import which
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
+from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox
 
 
 installer_building = False
@@ -244,22 +245,30 @@ class MainWindow:
         progress_dialog.show()
 
     def send_progress(self):
-        eml_to = self.app_settings.get_teacher_email()
-        eml_subject = "MyQueryTutor progress for {}".format(self.app_settings.get_user_name())
-        eml_subject = eml_subject.replace(' ', '%20')
+        firefox = which('firefox')
+        if firefox is None:
+            print("No FF")
+            error_dialog = QMessageBox(self.main_win)
+            error_dialog.setWindowTitle("Firefox not found")
+            error_dialog.setText('Firefox browser required but not detected')
+            error_dialog.exec()
+        else:
+            eml_to = self.app_settings.get_teacher_email()
+            eml_subject = "MyQueryTutor progress for {}".format(self.app_settings.get_user_name())
+            eml_subject = eml_subject.replace(' ', '%20')
 
-        progress_str = self.db_ctrl.get_progress_json()
+            progress_str = self.db_ctrl.get_progress_json()
 
-        eml_body = """
+            eml_body = """
 Sent by My Query Tutor%0d%0a - Current progress for {}%0d%0a{}""".format(
-            self.app_settings.get_user_name(),
-            progress_str
-        )
+                self.app_settings.get_user_name(),
+                progress_str
+            )
 
-        eml_body = eml_body.replace(' ', '%20')
+            eml_body = eml_body.replace(' ', '%20')
 
-        wb = webbrowser.get('Firefox')
-        wb.open('mailto:?to=' + eml_to + '&subject=' + eml_subject + '&body=' + eml_body, new=1)
+            wb = webbrowser.get('Firefox')
+            wb.open('mailto:?to=' + eml_to + '&subject=' + eml_subject + '&body=' + eml_body, new=2)
 
     def compare_queries(self, exemplar_query, user_query):
 
