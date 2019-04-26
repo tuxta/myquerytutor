@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen
 
-from first_run_wiz import FirstRunWiz
 
 installer_building = False
 
@@ -15,6 +14,7 @@ if installer_building:
     from myquerytutor.expectedresult import ExpectedResult
     from myquerytutor.database_controller import DatabaseController
     from myquerytutor.appsettings import AppSettings
+    from myquerytutor.first_run_wiz import FirstRunWiz
 else:
     from lessondialog import LessonDialog
     from ui_mainwindow import Ui_MainWindow
@@ -22,6 +22,7 @@ else:
     from expectedresult import ExpectedResult
     from database_controller import DatabaseController
     from appsettings import AppSettings
+    from first_run_wiz import FirstRunWiz
 
 
 class MainWindow:
