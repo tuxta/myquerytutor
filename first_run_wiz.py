@@ -1,5 +1,6 @@
 import os
 import shutil
+import pathlib
 from PyQt5.QtCore import Qt, QStandardPaths
 from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPalette, QPixmap
 from PyQt5.QtWidgets import QWizard
@@ -164,6 +165,14 @@ won't have to see this again :-D
             self.teacher_email_edit.setPalette(palette)
 
     def make_local_database(self):
-        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+        src_db_file = pathlib.Path(__file__).parent
+        src_db_file = os.path.join(src_db_file, 'MQT_APP.sqlite')
+        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppLocalDataLocation)
         file_name = os.path.join(dir_path, 'MQT_APP.sqlite')
-        shutil.copy('MQT_APP.sqlite', file_name)
+        shutil.copy(src_db_file, file_name)
+
+        src_db_file = pathlib.Path(__file__).parent
+        src_db_file = os.path.join(src_db_file, 'MQT_EX.sqlite')
+        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppLocalDataLocation)
+        file_name = os.path.join(dir_path, 'MQT_EX.sqlite')
+        shutil.copy(src_db_file, file_name)

@@ -14,10 +14,9 @@ class DatabaseController:
         self.ex_cursor = None
 
     def connect(self):
-        self.app_file_path = os.path.join(os.path.dirname(__file__), 'MQT_APP.sqlite')
-        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+        dir_path = QStandardPaths.writableLocation(QStandardPaths.AppLocalDataLocation)
         self.app_file_path = os.path.join(dir_path, 'MQT_APP.sqlite')
-        self.ex_file_path = os.path.join(os.path.dirname(__file__), 'MQT_EX.sqlite')
+        self.ex_file_path = os.path.join(dir_path, 'MQT_EX.sqlite')
         self.app_db = sqlite3.connect(self.app_file_path)
         self.ex_db = sqlite3.connect(self.ex_file_path)
         self.app_cursor = self.app_db.cursor()
