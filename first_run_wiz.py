@@ -16,7 +16,9 @@ class FirstRunWiz(QWizard):
 
         self.setWizardStyle(QWizard.ModernStyle)
         self.setWindowTitle("MQT First Run Wizard")
-        self.setPixmap(QWizard.WatermarkPixmap, QPixmap('watermark.png'))
+        watermark_file = pathlib.Path(__file__).parent
+        watermark_file = os.path.join(watermark_file, 'watermark.png')
+        self.setPixmap(QWizard.WatermarkPixmap, QPixmap(watermark_file))
 
         self.first_name = ''
         self.surname = ''
