@@ -66,7 +66,7 @@ class DatabaseController:
     def get_question(self, topic, question):
         self.app_cursor.execute(
             """
-                SELECT Question.id, description 
+                SELECT Question.id, description, ERD
                 FROM Topic, Question 
                 WHERE Question.topicId = Topic.id
                 AND Topic.name = :topic
@@ -75,7 +75,7 @@ class DatabaseController:
             {'topic': topic, 'question': question}
         )
         result = self.app_cursor.fetchone()
-        return result[0], result[1]
+        return result[0], result[1], result[2]
 
     def run_query(self, query_string):
         try:

@@ -289,21 +289,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_query">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Times New Roman</family>
-               <pointsize>18</pointsize>
-              </font>
-             </property>
+            <widget class="QPushButton" name="erdButton">
              <property name="text">
-              <string>Query</string>
+              <string>ERD</string>
              </property>
             </widget>
            </item>
@@ -429,7 +417,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>794</width>
-     <height>30</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

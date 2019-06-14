@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.1
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -161,18 +160,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem2)
-        self.label_query = QtWidgets.QLabel(self.layoutWidget2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_query.sizePolicy().hasHeightForWidth())
-        self.label_query.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(18)
-        self.label_query.setFont(font)
-        self.label_query.setObjectName("label_query")
-        self.horizontalLayout_2.addWidget(self.label_query)
+        self.erdButton = QtWidgets.QPushButton(self.layoutWidget2)
+        self.erdButton.setObjectName("erdButton")
+        self.horizontalLayout_2.addWidget(self.erdButton)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem3)
         self.expectedResult_button = QtWidgets.QPushButton(self.layoutWidget2)
@@ -215,7 +205,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.splitter_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 30))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 26))
         self.menuBar.setObjectName("menuBar")
         MainWindow.setMenuBar(self.menuBar)
 
@@ -230,7 +220,7 @@ class Ui_MainWindow(object):
         self.progress_button.setText(_translate("MainWindow", "Show Progress"))
         self.sendButton.setText(_translate("MainWindow", "Send Progress"))
         self.label_question.setText(_translate("MainWindow", "Question"))
-        self.label_query.setText(_translate("MainWindow", "Query"))
+        self.erdButton.setText(_translate("MainWindow", "ERD"))
         self.expectedResult_button.setText(_translate("MainWindow", "Expected Result"))
         self.runQuery_button.setText(_translate("MainWindow", "Run Query"))
         self.queryTextArea.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -238,6 +228,5 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Noto Sans\'; font-size:30pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400;\"><br /></p></body></html>"))
-
 
 from PyQt5 import QtWebEngineWidgets

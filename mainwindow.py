@@ -3,7 +3,7 @@ import webbrowser
 from shutil import which
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
 
 
 installer_building = False
@@ -39,6 +39,7 @@ class MainWindow:
         self.ui.queryTextArea.setFontPointSize(15)
         self.app_settings = AppSettings()
         self.settings_cancelled = False
+        self.erd = None
 
         first_run = False
         if not self.app_settings.has_settings():
@@ -64,6 +65,7 @@ class MainWindow:
         self.ui.help_button.clicked.connect(self.help_clicked)
         self.ui.progress_button.clicked.connect(self.show_progress)
         self.ui.sendButton.clicked.connect(self.send_progress)
+        self.ui.erdButton.clicked.connect(self.show_erd)
 
         # Disable the right click menu in the WebEngineView
         self.ui.questionTextArea.setContextMenuPolicy(Qt.NoContextMenu)
@@ -167,6 +169,26 @@ class MainWindow:
         self.ui.queryTextArea.setFontPointSize(15)
         self.ui.queryTextArea.setFontWeight(-1)
 
+    def show_erd(self):
+        if self.question != '':
+            image_dialog = QDialog()
+            image_dialog.setModal(False)
+
+            if self.erd is None:
+                image_label = QLabel("No Diagram set for Question")
+            else:
+                image_label = QLabel(self.erd)
+                image = QPixmap(self.erd)
+                image_label.setPixmap(image.scaled(1024, 768, Qt.KeepAspectRatio))
+            layout = QBoxLayout(QBoxLayout.LeftToRight)
+            layout.addWidget(image_label)
+            image_label.setScaledContents(True)
+            image_label.setMinimumHeight(100)
+            image_label.setMinimumWidth(100)
+            image_dialog.setLayout(layout)
+            image_dialog.setModal(False)
+            image_dialog.exec()
+
     def run_query_clicked(self):
         query = self.ui.queryTextArea.toPlainText()
         if query != '':
@@ -232,7 +254,7 @@ class MainWindow:
         self.topic = topic_item.data()
         self.question = index.data()
 
-        self.question_id, description = self.db_ctrl.get_question(self.topic, self.question)
+        self.question_id, description, self.erd = self.db_ctrl.get_question(self.topic, self.question)
         self.ui.questionTextArea.setHtml(description)
 
         # Load last query attempted for this question if on exists
