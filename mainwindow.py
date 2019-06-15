@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import webbrowser
 from bs4 import BeautifulSoup
@@ -264,9 +265,18 @@ class MainWindow:
         self.question_id, description, self.erd = self.db_ctrl.get_question(self.topic, self.question)
 
         # Replace relative path to absolute
-        soup = BeautifulSoup(description, "lxml")
+        soup = BeautifulSoup(description, "html.parser")
         for img in soup.findAll('img'):
             img['src'] = 'file://' + os.getcwd() + "/images/" + img['src']
+
+        for style in soup.find('style'):
+            style_str = str(style)
+            finds = re.findall('url\(.+?\)', style_str)
+            for find in finds:
+                sub_str = find[5:-2]
+                new_url = 'url("file://' + os.getcwd() + '/images/' + sub_str + '")'
+                style_str = style_str.replace(find, new_url)
+            style.replaceWith(BeautifulSoup(style_str))
         description = str(soup)
 
         self.ui.questionTextArea.setHtml(description)
