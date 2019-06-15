@@ -1,9 +1,12 @@
+import os
 import sys
 import webbrowser
+from bs4 import BeautifulSoup
 from shutil import which
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
+from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 
 
 installer_building = False
@@ -70,6 +73,9 @@ class MainWindow:
         # Disable the right click menu in the WebEngineView
         self.ui.questionTextArea.setContextMenuPolicy(Qt.NoContextMenu)
         self.ui.questionTextArea.setContextMenuPolicy(Qt.PreventContextMenu)
+
+        self.ui.questionTextArea.settings().setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
+        self.ui.questionTextArea.settings().setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
 
         # Set the initial Webview content - Credits
         self.ui.questionTextArea.setHtml('''
@@ -144,6 +150,7 @@ class MainWindow:
             self.ui.splitter_2.setSizes([206, 565])
 
         self.splash_screen.finish(self.main_win)
+        self.ui.questionTextArea.settings().setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
 
     def __del__(self):
         if not self.settings_cancelled:
@@ -178,7 +185,7 @@ class MainWindow:
                 image_label = QLabel("No Diagram set for Question")
             else:
                 image_label = QLabel(self.erd)
-                image = QPixmap(self.erd)
+                image = QPixmap(os.path.join("images", self.erd))
                 image_label.setPixmap(image.scaled(1024, 768, Qt.KeepAspectRatio))
             layout = QBoxLayout(QBoxLayout.LeftToRight)
             layout.addWidget(image_label)
@@ -255,6 +262,13 @@ class MainWindow:
         self.question = index.data()
 
         self.question_id, description, self.erd = self.db_ctrl.get_question(self.topic, self.question)
+
+        # Replace relative path to absolute
+        soup = BeautifulSoup(description, "lxml")
+        for img in soup.findAll('img'):
+            img['src'] = 'file://' + os.getcwd() + "/images/" + img['src']
+        description = str(soup)
+
         self.ui.questionTextArea.setHtml(description)
 
         # Load last query attempted for this question if on exists

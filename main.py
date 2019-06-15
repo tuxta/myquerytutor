@@ -11,6 +11,7 @@ else:
 
 
 def main():
+    sys.argv.append("--disable-web-security")
     app = QApplication(sys.argv)
     app.setOrganizationName("Tuxtas")
     main_win = MainWindow()
