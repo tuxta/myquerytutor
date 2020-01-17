@@ -1,6 +1,7 @@
-import sqlite3
 import os
 import json
+import sqlite3
+import collections
 from PyQt5.QtCore import QStandardPaths
 
 
@@ -21,7 +22,6 @@ class DatabaseController:
         self.ex_db = sqlite3.connect(self.ex_file_path)
         self.app_cursor = self.app_db.cursor()
         self.ex_cursor = self.ex_db.cursor()
-
 
     def close_databases(self):
         self.app_db.close()
@@ -156,7 +156,7 @@ class DatabaseController:
             self.app_cursor.execute(
                 """
                     UPDATE Queries
-                    SET query = :query, success = :success
+                    SET query = :query, success = :success, attempts = (attempts + 1), synced = 0
                     WHERE question_id = (
                         SELECT Question.id
                         FROM Question
@@ -219,3 +219,33 @@ class DatabaseController:
         json_str = json.dumps(progress_map)
 
         return json_str
+
+    def get_sync_up_data(self, firstname, surname, email):
+        self.app_cursor.execute(
+            """
+                SELECT name, title, query, success, attempts
+                FROM topic, Question, Queries
+                WHERE Queries.question_id = Question.id
+                AND Queries.topic_id = topic.id
+                AND synced = 0
+                ORDER BY name
+            """
+        )
+        result = self.app_cursor.fetchall()
+        query_map = {}
+        for row in result:
+            if row[0] not in query_map:
+                query_map[row[0]] = []
+            query_map[row[0]].append({"pass": row[3], "query": row[2], "question": row[1], "attempts": row[4]})
+
+        send_data = {
+            "student":
+                {
+                    "firstname": "{}".format(firstname),
+                    "lastname": "{}".format(surname),
+                    "email": "{}".format(email)
+                },
+            "topics": query_map
+        }
+
+        return send_data

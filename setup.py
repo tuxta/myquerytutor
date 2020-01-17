@@ -15,5 +15,5 @@ setup(
             "excludes":['tcl', 'ttk', 'tkinter', 'Tkinter']
         }
     },
-    executables=execs, requires=['beautifulsoup4']
+    executables=execs, requires=['beautifulsoup4', 'requests', 'PyQt5']
 )

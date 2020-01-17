@@ -3,11 +3,11 @@ import re
 import sys
 import requests
 from bs4 import BeautifulSoup
-from PyQt5.QtGui import QPixmap
+from settingsdialog import SettingsDialog
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
+from PyQt5.Qt import QLabel, QPushButton, QGridLayout, QLineEdit, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
-
 
 installer_building = False
 
@@ -201,6 +201,9 @@ class MainWindow:
         query = self.ui.queryTextArea.toPlainText()
         if query != '':
 
+            self.ui.syncButton.setText("Sync with server")
+            self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
+
             column_names, row_data = self.db_ctrl.run_query(query)
 
             expected_result_query = self.db_ctrl.get_question_query(self.question_id)
@@ -296,39 +299,70 @@ class MainWindow:
         progress_dialog.show()
 
     def sync_progress(self):
-        # Check the url - show settings dialog if url is emtpy string
+        # ###################################################################### #
+        # #########                      Web API                         ####### #
+        # #########                      -------                         ####### #
+        # #########                                                      ####### #
+        # #########    test - Get - class_key                            ####### #
+        # #########                                                      ####### #
+        # #########    sync - GET - class_key, email, last_sync          ####### #
+        # #########                                                      ####### #
+        # #########    sync - POST - json_str                            ####### #
+        # #########                                                      ####### #
+        # ###################################################################### #
+
         server_addr, class_key = self.app_settings.get_server_details()
+        firstname, surname, email = self.app_settings.get_user_details()
 
         if len(server_addr) == 0:
-            if not self.update_server_settings():
-                self.ui.syncButton.setText("Sync with server")
-                self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
-                # show fail dialog
-                return
+            print("No server string")
+            self.update_server_settings(server_addr, class_key)
+            return
 
-        # Hit the test api call to check server availability and valid class key - Show dialog if error code
-        request_str = "http://{}:12380/api/test?class_key={}".format(server_addr, class_key)
-        print(request_str)
-        request_data = requests.get(request_str)
+        request_str = "http://{}:12380/api/test?classcode={}".format(server_addr, class_key)
+        try:
+            request_data = requests.get(request_str)
+            request_data.raise_for_status()
+        except requests.HTTPError as http_err:
+            print('HTTP ERROR: {http_err}')
+            self.update_server_settings(server_addr, class_key)
+            return
+        except Exception as err:
+            print('Error: {err}')
+            self.update_server_settings(server_addr, class_key)
+            return
+        print("Test call successfull")
 
-        print(request_data)
+        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email)
 
-        # sync up
+        # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
+        # On success, mark all entries in database as sync'd, then add all returned entries into the database (sync'd)
+        request_str = "http://{}:12380/api/sync?classcode={}".format(server_addr, class_key)
+        try:
+            request_data = requests.post(request_str, json=sync_up_data)
+            request_data.raise_for_status()
+        except requests.HTTPError as http_err:
+            print('HTTP ERROR: {}'.format(http_err))
+            self.update_server_settings(server_addr, class_key)
+            return
+        except Exception as err:
+            print('Error: {}'.format(err))
+            self.update_server_settings(server_addr, class_key)
+            return
 
-        # sync down
+        # Add rows to the database.
+        print(request_data.json())
 
         # Change sync button to green if all completes successfully
+        self.ui.syncButton.setText("In Sync")
+        self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightgreen; color : black }")
 
-        error_dialog = QMessageBox(self.main_win)
-        error_dialog.setWindowTitle("Not Implemented")
-        error_dialog.setText('The sync function has not yet been implemented')
-        error_dialog.exec()
+    def update_server_settings(self, server_address, class_key):
+        # Show dialog with server settings, test settings and return true on success, false on fail
+        settings_dialog = SettingsDialog(self.main_win, self.app_settings, server_address, class_key, False)
+        settings_dialog.exec()
         self.ui.syncButton.setText("Sync with server")
         self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
-
-    def update_server_settings(self):
-        # Show dialog with server settings, test settings and return true on success, false on fail
-        pass
 
     @staticmethod
     def compare_queries(exemplar_query, user_query):
