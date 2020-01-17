@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -93,9 +93,9 @@ class Ui_MainWindow(object):
         self.progress_button.setSizePolicy(sizePolicy)
         self.progress_button.setObjectName("progress_button")
         self.verticalLayout.addWidget(self.progress_button)
-        self.sendButton = QtWidgets.QPushButton(self.frame_8)
-        self.sendButton.setObjectName("sendButton")
-        self.verticalLayout.addWidget(self.sendButton)
+        self.syncButton = QtWidgets.QPushButton(self.frame_8)
+        self.syncButton.setObjectName("syncButton")
+        self.verticalLayout.addWidget(self.syncButton)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
         self.verticalLayout_4.addWidget(self.frame_8)
         self.splitter = QtWidgets.QSplitter(self.splitter_2)
@@ -205,7 +205,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.splitter_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 26))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 794, 25))
         self.menuBar.setObjectName("menuBar")
         MainWindow.setMenuBar(self.menuBar)
 
@@ -218,7 +218,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Topics"))
         self.help_button.setText(_translate("MainWindow", "Topic Lesson"))
         self.progress_button.setText(_translate("MainWindow", "Show Progress"))
-        self.sendButton.setText(_translate("MainWindow", "Send Progress"))
+        self.syncButton.setText(_translate("MainWindow", "Sync"))
         self.label_question.setText(_translate("MainWindow", "Question"))
         self.erdButton.setText(_translate("MainWindow", "ERD"))
         self.expectedResult_button.setText(_translate("MainWindow", "Expected Result"))

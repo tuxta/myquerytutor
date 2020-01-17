@@ -148,9 +148,9 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="sendButton">
+              <widget class="QPushButton" name="syncButton">
                <property name="text">
-                <string>Send Progress</string>
+                <string>Sync</string>
                </property>
               </widget>
              </item>
@@ -417,7 +417,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>794</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

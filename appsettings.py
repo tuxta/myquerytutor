@@ -25,15 +25,20 @@ class AppSettings:
     def get_splitter_2_geometry(self):
         return self.settings.value('MainWindow/splitter_2', [], int)
 
-    def set_user_name(self, first_name, surname):
-        self.settings.setValue("User/name", first_name + " " + surname)
+    def set_user_details(self, first_name, surname, email):
+        self.settings.setValue("User/FirstName", first_name)
+        self.settings.setValue("User/Surname", surname)
+        self.settings.setValue("User/email", email)
 
-    def get_user_name(self):
-        return self.settings.value("User/name")
+    def get_user_details(self):
+        first_name = self.settings.value("User/FirstName")
+        surname = self.settings.value("User/Surname")
+        email = self.settings.value("User/email")
+        return first_name, surname, email
 
-    def set_teacher_info(self, teacher_name, teacher_email):
-        self.settings.setValue("Teacher/name", teacher_name)
-        self.settings.setValue("Teacher/email", teacher_email)
+    def set_server_details(self, server_address, class_key):
+        self.settings.setValue("Server/address", server_address)
+        self.settings.setValue("Server/class_key", class_key)
 
-    def get_teacher_email(self):
-        return self.settings.value("Teacher/email")
+    def get_server_details(self):
+        return self.settings.value("Server/address"), self.settings.value("Server/class_key")

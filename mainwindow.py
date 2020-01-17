@@ -1,13 +1,12 @@
 import os
 import re
 import sys
-import webbrowser
+import requests
 from bs4 import BeautifulSoup
-from shutil import which
-from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
+from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
+from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
 
 
 installer_building = False
@@ -68,7 +67,7 @@ class MainWindow:
         self.ui.expectedResult_button.clicked.connect(self.expected_result_clicked)
         self.ui.help_button.clicked.connect(self.help_clicked)
         self.ui.progress_button.clicked.connect(self.show_progress)
-        self.ui.sendButton.clicked.connect(self.send_progress)
+        self.ui.syncButton.clicked.connect(self.sync_progress)
         self.ui.erdButton.clicked.connect(self.show_erd)
 
         # Disable the right click menu in the WebEngineView
@@ -160,7 +159,8 @@ class MainWindow:
                                            self.ui.splitter_2.sizes()
                                            )
 
-    def initial_checks(self):
+    @staticmethod
+    def initial_checks():
         db_ctrl = DatabaseController()
         db_ctrl.connect()
         return db_ctrl
@@ -295,33 +295,43 @@ class MainWindow:
         progress_dialog.ui.textBrowser.deleteLater()
         progress_dialog.show()
 
-    def send_progress(self):
-        firefox = which('firefox')
-        if firefox is None:
-            print("No FF")
-            error_dialog = QMessageBox(self.main_win)
-            error_dialog.setWindowTitle("Firefox not found")
-            error_dialog.setText('Firefox browser required but not detected')
-            error_dialog.exec()
-        else:
-            eml_to = self.app_settings.get_teacher_email()
-            eml_subject = "MyQueryTutor progress for {}".format(self.app_settings.get_user_name())
-            eml_subject = eml_subject.replace(' ', '%20')
+    def sync_progress(self):
+        # Check the url - show settings dialog if url is emtpy string
+        server_addr, class_key = self.app_settings.get_server_details()
 
-            progress_str = self.db_ctrl.get_progress_json()
+        if len(server_addr) == 0:
+            if not self.update_server_settings():
+                self.ui.syncButton.setText("Sync with server")
+                self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
+                # show fail dialog
+                return
 
-            eml_body = """
-Sent by My Query Tutor%0d%0a - Current progress for {}%0d%0a{}""".format(
-                self.app_settings.get_user_name(),
-                progress_str
-            )
+        # Hit the test api call to check server availability and valid class key - Show dialog if error code
+        request_str = "http://{}:12380/api/test?class_key={}".format(server_addr, class_key)
+        print(request_str)
+        request_data = requests.get(request_str)
 
-            eml_body = eml_body.replace(' ', '%20')
+        print(request_data)
 
-            wb = webbrowser.get('Firefox')
-            wb.open('mailto:?to=' + eml_to + '&subject=' + eml_subject + '&body=' + eml_body, new=2)
+        # sync up
 
-    def compare_queries(self, exemplar_query, user_query):
+        # sync down
+
+        # Change sync button to green if all completes successfully
+
+        error_dialog = QMessageBox(self.main_win)
+        error_dialog.setWindowTitle("Not Implemented")
+        error_dialog.setText('The sync function has not yet been implemented')
+        error_dialog.exec()
+        self.ui.syncButton.setText("Sync with server")
+        self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
+
+    def update_server_settings(self):
+        # Show dialog with server settings, test settings and return true on success, false on fail
+        pass
+
+    @staticmethod
+    def compare_queries(exemplar_query, user_query):
 
         html_string_list = []
 
