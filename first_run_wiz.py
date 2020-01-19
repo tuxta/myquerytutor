@@ -137,7 +137,7 @@ won't have to see this again :-D
             else:
                 all_goods = False
         if current_id == 3:
-            self.app_settings.set_server_details(self.server_address_edit.text(), self.class_key_edit.text())
+            self.app_settings.set_server_details(self.server_address_edit.text(), self.class_key_edit.text(), "")
 
         return all_goods
 

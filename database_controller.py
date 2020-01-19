@@ -250,3 +250,41 @@ class DatabaseController:
         }
 
         return send_data
+
+    def mark_synced(self):
+        self.app_cursor.execute(
+            """
+                UPDATE Queries
+                SET synced = 1
+                WHERE synced = 0
+            """
+        )
+
+    def insert_synced_records(self, records):
+        for record in records:
+            self.app_cursor.execute(
+                """
+                    INSERT INTO Queries (question_id, topic_id, query, success, attempts, synced)
+                    VALUES (
+                        (
+                            SELECT Question.id
+                            FROM Question
+                            WHERE Question.title = :question
+                        ),
+                        (
+                            SELECT Topic.id
+                            FROM Topic
+                            WHERE Topic.name = :topic
+                        ),
+                        :query, :success, :attempts, 1
+                    )
+                """,
+                {
+                    'question': record["question"],
+                    'topic': record["topic"],
+                    'query': record["query"],
+                    'success': record["pass"],
+                    'attempts': record["attempts"]
+                }
+            )
+        self.app_db.commit()

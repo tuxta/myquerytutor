@@ -36,9 +36,16 @@ class AppSettings:
         email = self.settings.value("User/email")
         return first_name, surname, email
 
-    def set_server_details(self, server_address, class_key):
+    def set_server_details(self, server_address, class_key, time_stamp):
         self.settings.setValue("Server/address", server_address)
         self.settings.setValue("Server/class_key", class_key)
+        self.settings.setValue("Server/time_stamp", time_stamp)
 
     def get_server_details(self):
         return self.settings.value("Server/address"), self.settings.value("Server/class_key")
+
+    def set_time_stamp(self, time_stamp):
+        self.settings.setValue("Server/time_stamp", time_stamp)
+
+    def get_time_stamp(self):
+        return self.settings.value("Server/time_stamp")

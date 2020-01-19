@@ -3,11 +3,13 @@ import re
 import sys
 import requests
 from bs4 import BeautifulSoup
-from settingsdialog import SettingsDialog
+
+from PyQt5.Qt import QPixmap
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
-from PyQt5.Qt import QLabel, QPushButton, QGridLayout, QLineEdit, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QMessageBox, QLabel, QDialog, QBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QLabel, QDialog, QBoxLayout
+
+from settingsdialog import SettingsDialog
 
 installer_building = False
 
@@ -333,7 +335,7 @@ class MainWindow:
             return
         print("Test call successfull")
 
-        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email, "")
+        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email, self.app_settings.get_time_stamp())
         print(sync_up_data)
 
         # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
@@ -352,8 +354,15 @@ class MainWindow:
             return
 
         # Add rows to the database.
-        print(request_data.json())
+        synced_down_data = request_data.json()
+        print(synced_down_data)
 
+        # Update timestamp from returned json
+        self.app_settings.set_time_stamp(synced_down_data["timestamp"])
+        # Mark all entries at synced
+        self.db_ctrl.mark_synced()
+        # insert new records.
+        self.db_ctrl.insert_synced_records(synced_down_data["results"])
         # Change sync button to green if all completes successfully
         self.ui.syncButton.setText("In Sync")
         self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightgreen; color : black }")
