@@ -220,7 +220,7 @@ class DatabaseController:
 
         return json_str
 
-    def get_sync_up_data(self, firstname, surname, email):
+    def get_sync_up_data(self, firstname, surname, email, timestamp):
         self.app_cursor.execute(
             """
                 SELECT name, title, query, success, attempts
@@ -232,11 +232,11 @@ class DatabaseController:
             """
         )
         result = self.app_cursor.fetchall()
-        query_map = {}
+        results_list = []
         for row in result:
-            if row[0] not in query_map:
-                query_map[row[0]] = []
-            query_map[row[0]].append({"pass": row[3], "query": row[2], "question": row[1], "attempts": row[4]})
+            results_list.append(
+                {"topic": row[0], "pass": row[3], "query": row[2], "question": row[1], "attempts": row[4]}
+            )
 
         send_data = {
             "student":
@@ -245,7 +245,8 @@ class DatabaseController:
                     "lastname": "{}".format(surname),
                     "email": "{}".format(email)
                 },
-            "topics": query_map
+            "timestamp": timestamp,
+            "results": results_list
         }
 
         return send_data

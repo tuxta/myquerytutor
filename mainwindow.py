@@ -333,7 +333,8 @@ class MainWindow:
             return
         print("Test call successfull")
 
-        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email)
+        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email, "")
+        print(sync_up_data)
 
         # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
         # On success, mark all entries in database as sync'd, then add all returned entries into the database (sync'd)
