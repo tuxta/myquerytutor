@@ -232,7 +232,12 @@ class MainWindow:
             if query != '':
                 column_names, row_data = self.db_ctrl.run_query(query)
 
-                answer_dialog = ExpectedResult(self.main_win, 'Expected Result for ' + self.question, column_names, row_data)
+                answer_dialog = ExpectedResult(
+                    self.main_win,
+                    'Expected Result for ' + self.question,
+                    column_names,
+                    row_data
+                )
 
                 answer_dialog.setModal(False)
                 answer_dialog.ui.label_correct.setText('')
@@ -301,17 +306,6 @@ class MainWindow:
         progress_dialog.show()
 
     def sync_progress(self):
-        # ###################################################################### #
-        # #########                      Web API                         ####### #
-        # #########                      -------                         ####### #
-        # #########                                                      ####### #
-        # #########    test - Get - class_key                            ####### #
-        # #########                                                      ####### #
-        # #########    sync - GET - class_key, email, last_sync          ####### #
-        # #########                                                      ####### #
-        # #########    sync - POST - json_str                            ####### #
-        # #########                                                      ####### #
-        # ###################################################################### #
 
         server_addr, class_key = self.app_settings.get_server_details()
         firstname, surname, email = self.app_settings.get_user_details()

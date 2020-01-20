@@ -27,4 +27,4 @@ class SettingsDialog(QDialog):
         self.ui.buttonBox.accepted.connect(self.ok)
 
     def ok(self):
-        self.app_settings.set_server_details(self.ui.lineEdit.text(), self.ui.lineEdit_2.text())
+        self.app_settings.set_server_details(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), "")
