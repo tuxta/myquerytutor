@@ -3,7 +3,7 @@ import re
 import shutil
 import pathlib
 from PyQt5.QtCore import QStandardPaths
-from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPixmap
+from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPixmap, QCheckBox
 from PyQt5.QtWidgets import QWizard
 
 
@@ -30,6 +30,7 @@ class FirstRunWiz(QWizard):
 
         self.server_address = ''
         self.class_key = ''
+        self.ssl_checkbox = None
         self.server_address_edit = None
         self.class_key_edit = None
 
@@ -70,11 +71,15 @@ won't have to see this again :-D
         self.server_address_edit = QLineEdit()
         class_key_label = QLabel("Class Key         ")
         self.class_key_edit = QLineEdit()
+        ssl_label = QLabel("SSL               ")
+        self.ssl_checkbox = QCheckBox()
 
         layout.addWidget(server_address_label, 1, 0)
         layout.addWidget(self.server_address_edit, 1, 1)
         layout.addWidget(class_key_label, 2, 0)
         layout.addWidget(self.class_key_edit, 2, 1)
+        layout.addWidget(ssl_label, 3, 0)
+        layout.addWidget(self.ssl_checkbox, 3, 1)
 
         return page
 
@@ -137,7 +142,16 @@ won't have to see this again :-D
             else:
                 all_goods = False
         if current_id == 3:
-            self.app_settings.set_server_details(self.server_address_edit.text(), self.class_key_edit.text(), "")
+            if self.ssl_checkbox.isChecked():
+                ssl = 'true'
+            else:
+                ssl = 'false'
+            self.app_settings.set_server_details(
+                self.server_address_edit.text(),
+                self.class_key_edit.text(),
+                "",
+                ssl
+            )
 
         return all_goods
 

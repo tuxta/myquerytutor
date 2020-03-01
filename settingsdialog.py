@@ -27,4 +27,13 @@ class SettingsDialog(QDialog):
         self.ui.buttonBox.accepted.connect(self.ok)
 
     def ok(self):
-        self.app_settings.set_server_details(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), "")
+        if self.ui.checkBox.isChecked():
+            ssl = 'true'
+        else:
+            ssl = 'false'
+        self.app_settings.set_server_details(
+            self.ui.lineEdit.text(),
+            self.ui.lineEdit_2.text(),
+            "",
+            ssl
+        )

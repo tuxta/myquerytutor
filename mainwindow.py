@@ -307,25 +307,30 @@ class MainWindow:
 
     def sync_progress(self):
 
-        server_addr, class_key = self.app_settings.get_server_details()
+        server_addr, class_key, ssl_set = self.app_settings.get_server_details()
         firstname, surname, email = self.app_settings.get_user_details()
+        if ssl_set:
+            protocol = "https"
+            port = "443"
+        else:
+            protocol = "http"
+            port = "80"
 
         if len(server_addr) == 0:
-            print("No server string")
-            self.update_server_settings(server_addr, class_key)
+            self.update_server_settings(server_addr, class_key, ssl_set)
             return
 
-        request_str = "{}/api/test?classcode={}".format(server_addr, class_key)
+        request_str = "{}://{}:{}/api/test?classcode={}".format(protocol, server_addr, port, class_key)
         try:
             request_data = requests.get(request_str)
             request_data.raise_for_status()
         except requests.HTTPError as http_err:
             print('HTTP ERROR: {http_err}')
-            self.update_server_settings(server_addr, class_key)
+            self.update_server_settings(server_addr, class_key, ssl_set)
             return
         except Exception as err:
             print('Error: {err}')
-            self.update_server_settings(server_addr, class_key)
+            self.update_server_settings(server_addr, class_key, ssl_set)
             return
         print("Test call successfull")
 
@@ -334,17 +339,17 @@ class MainWindow:
 
         # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
         # On success, mark all entries in database as sync'd, then add all returned entries into the database (sync'd)
-        request_str = "{}/api/sync?classcode={}".format(server_addr, class_key)
+        request_str = "{}://{}:{}/api/sync?classcode={}".format(protocol, server_addr, port, class_key)
         try:
             request_data = requests.post(request_str, json=sync_up_data)
             request_data.raise_for_status()
         except requests.HTTPError as http_err:
             print('HTTP ERROR: {}'.format(http_err))
-            self.update_server_settings(server_addr, class_key)
+            self.update_server_settings(server_addr, class_key, ssl_set)
             return
         except Exception as err:
             print('Error: {}'.format(err))
-            self.update_server_settings(server_addr, class_key)
+            self.update_server_settings(server_addr, class_key, ssl_set)
             return
 
         # Add rows to the database.
@@ -361,9 +366,9 @@ class MainWindow:
         self.ui.syncButton.setText("In Sync")
         self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightgreen; color : black }")
 
-    def update_server_settings(self, server_address, class_key):
+    def update_server_settings(self, server_address, class_key, ssl):
         # Show dialog with server settings, test settings and return true on success, false on fail
-        settings_dialog = SettingsDialog(self.main_win, self.app_settings, server_address, class_key, False)
+        settings_dialog = SettingsDialog(self.main_win, self.app_settings, server_address, class_key, ssl)
         settings_dialog.exec()
         self.ui.syncButton.setText("Sync with server")
         self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
