@@ -315,7 +315,7 @@ class MainWindow:
             self.update_server_settings(server_addr, class_key)
             return
 
-        request_str = "http://{}:12380/api/test?classcode={}".format(server_addr, class_key)
+        request_str = "{}/api/test?classcode={}".format(server_addr, class_key)
         try:
             request_data = requests.get(request_str)
             request_data.raise_for_status()
@@ -334,7 +334,7 @@ class MainWindow:
 
         # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
         # On success, mark all entries in database as sync'd, then add all returned entries into the database (sync'd)
-        request_str = "http://{}:12380/api/sync?classcode={}".format(server_addr, class_key)
+        request_str = "{}/api/sync?classcode={}".format(server_addr, class_key)
         try:
             request_data = requests.post(request_str, json=sync_up_data)
             request_data.raise_for_status()
