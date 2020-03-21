@@ -9,8 +9,6 @@ from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QLabel, QDialog, QBoxLayout
 
-from settingsdialog import SettingsDialog
-
 installer_building = False
 
 if installer_building:
@@ -21,6 +19,7 @@ if installer_building:
     from myquerytutor.database_controller import DatabaseController
     from myquerytutor.appsettings import AppSettings
     from myquerytutor.first_run_wiz import FirstRunWiz
+    from myquerytutor.settingsdialog import SettingsDialog
 else:
     from lessondialog import LessonDialog
     from ui_mainwindow import Ui_MainWindow
@@ -29,10 +28,13 @@ else:
     from database_controller import DatabaseController
     from appsettings import AppSettings
     from first_run_wiz import FirstRunWiz
+    from settingsdialog import SettingsDialog
 
 
 class MainWindow:
     def __init__(self):
+
+        self.dir_path = os.path.dirname(os.path.realpath(__file__))
 
         self.splash_screen = QSplashScreen()
         self.splash_screen.setPixmap(QPixmap('splash.png'))
@@ -188,7 +190,7 @@ class MainWindow:
                 image_label = QLabel("No Diagram set for Question")
             else:
                 image_label = QLabel(self.erd)
-                image = QPixmap(os.path.join("images", self.erd))
+                image = QPixmap(os.path.join(self.dir_path, "images", self.erd))
                 image_label.setPixmap(image.scaled(1024, 768, Qt.KeepAspectRatio))
             layout = QBoxLayout(QBoxLayout.LeftToRight)
             layout.addWidget(image_label)
@@ -274,17 +276,18 @@ class MainWindow:
 
         self.question_id, description, self.erd = self.db_ctrl.get_question(self.topic, self.question)
 
+        global installer_building
         # Replace relative path to absolute
         soup = BeautifulSoup(description, "html.parser")
         for img in soup.findAll('img'):
-            img['src'] = 'file://' + os.getcwd() + "/images/" + img['src']
+            img['src'] = 'file://' + self.dir_path + "/images/" + img['src']
 
         for style in soup.find('style'):
             style_str = str(style)
             finds = re.findall('url\(.+?\)', style_str)
             for find in finds:
                 sub_str = find[5:-2]
-                new_url = 'url("file://' + os.getcwd() + '/images/' + sub_str + '")'
+                new_url = 'url("file://' + self.dir_path + '/images/' + sub_str + '")'
                 style_str = style_str.replace(find, new_url)
             style.replaceWith(BeautifulSoup(style_str))
         description = str(soup)
