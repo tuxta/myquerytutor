@@ -280,14 +280,14 @@ class MainWindow:
         # Replace relative path to absolute
         soup = BeautifulSoup(description, "html.parser")
         for img in soup.findAll('img'):
-            img['src'] = 'file://' + self.dir_path + "/images/" + img['src']
+            img['src'] = 'file://' + self.dir_path + os.sep + "images" + os.sep + img['src']
 
         for style in soup.find('style'):
             style_str = str(style)
             finds = re.findall('url\(.+?\)', style_str)
             for find in finds:
                 sub_str = find[5:-2]
-                new_url = 'url("file://' + self.dir_path + '/images/' + sub_str + '")'
+                new_url = 'url("file://' + self.dir_path + os.sep + 'images' + os.sep + sub_str + '")'
                 style_str = style_str.replace(find, new_url)
             style.replaceWith(BeautifulSoup(style_str))
         description = str(soup)
