@@ -293,7 +293,7 @@ class MainWindow:
                     directory_path = 'C:' + directory_path
                 else:
                     directory_path = self.dir_path
-                new_url = 'url("file://' + directory_path + os.sep + 'images' + os.sep + sub_str + '")'
+                new_url = 'url("file://' + directory_path + '/images/' + sub_str + '")'
                 style_str = style_str.replace(find, new_url)
             style.replaceWith(BeautifulSoup(style_str))
         description = str(soup)
