@@ -1,11 +1,11 @@
 import os
 import re
 import sys
-import requests
 from bs4 import BeautifulSoup
 
 from PyQt5.Qt import QPixmap
-from PyQt5.QtCore import Qt, QModelIndex
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt, QModelIndex, QThreadPool
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from PyQt5.QtWidgets import QMainWindow, QTreeWidgetItem, QSplashScreen, QLabel, QDialog, QBoxLayout
 
@@ -20,6 +20,7 @@ if installer_building:
     from myquerytutor.appsettings import AppSettings
     from myquerytutor.first_run_wiz import FirstRunWiz
     from myquerytutor.settingsdialog import SettingsDialog
+    from myquerytutor.server_sync import ServerSync
 else:
     from lessondialog import LessonDialog
     from ui_mainwindow import Ui_MainWindow
@@ -29,10 +30,12 @@ else:
     from appsettings import AppSettings
     from first_run_wiz import FirstRunWiz
     from settingsdialog import SettingsDialog
+    from server_sync import ServerSync
 
 
-class MainWindow:
+class MainWindow(QMainWindow):
     def __init__(self):
+        super().__init__()
 
         self.dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -40,13 +43,14 @@ class MainWindow:
         self.splash_screen.setPixmap(QPixmap('splash.png'))
         self.splash_screen.show()
 
-        self.main_win = QMainWindow()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self.main_win)
+        self.ui.setupUi(self)
         self.ui.queryTextArea.setFontPointSize(15)
         self.app_settings = AppSettings()
         self.settings_cancelled = False
         self.erd = None
+        self.sync_results = {}
+        self.thread_pool = QThreadPool()
 
         first_run = False
         if not self.app_settings.has_settings():
@@ -145,7 +149,7 @@ class MainWindow:
         self.ui.queryTextArea.textChanged.connect(self.reset_font_query_edit)
 
         if not first_run:
-            self.main_win.restoreGeometry(self.app_settings.get_geometry())
+            self.restoreGeometry(self.app_settings.get_geometry())
             self.ui.splitter.setSizes(self.app_settings.get_splitter_1_geometry())
             self.ui.splitter_2.setSizes(self.app_settings.get_splitter_2_geometry())
         else:
@@ -153,24 +157,22 @@ class MainWindow:
             self.ui.splitter.setSizes([393, 161])
             self.ui.splitter_2.setSizes([206, 565])
 
-        self.splash_screen.finish(self.main_win)
+        self.splash_screen.finish(self)
         self.ui.questionTextArea.settings().setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
 
-    def __del__(self):
+    def closeEvent(self, event):
         if not self.settings_cancelled:
-            self.app_settings.set_geometry(self.main_win.saveGeometry(),
+            self.app_settings.set_geometry(self.saveGeometry(),
                                            self.ui.splitter.sizes(),
                                            self.ui.splitter_2.sizes()
                                            )
+        event.accept()
 
     @staticmethod
     def initial_checks():
         db_ctrl = DatabaseController()
         db_ctrl.connect()
         return db_ctrl
-
-    def show(self):
-        self.main_win.show()
 
     def reset_font_query_edit(self):
         """
@@ -223,7 +225,7 @@ class MainWindow:
             # Compare the exemplar query with the user query to identify errors
             query_comparison_html = self.compare_queries(expected_result_query, query)
 
-            result_dialog = ExpectedResult(self.main_win, self.question, column_names, row_data, result_color)
+            result_dialog = ExpectedResult(self, self.question, column_names, row_data, result_color)
             result_dialog.setModal(False)
             result_dialog.ui.textBrowser.setHtml(query_comparison_html)
             result_dialog.show()
@@ -235,7 +237,7 @@ class MainWindow:
                 column_names, row_data = self.db_ctrl.run_query(query)
 
                 answer_dialog = ExpectedResult(
-                    self.main_win,
+                    self,
                     'Expected Result for ' + self.question,
                     column_names,
                     row_data
@@ -249,7 +251,7 @@ class MainWindow:
     def help_clicked(self):
         if not self.topic == '':
             lesson = self.db_ctrl.get_lesson(self.topic)
-            lesson_dialog = LessonDialog(self.main_win, self.topic, lesson)
+            lesson_dialog = LessonDialog(self, self.topic, lesson)
             lesson_dialog.setModal(False)
             lesson_dialog.show()
 
@@ -307,7 +309,7 @@ class MainWindow:
     def show_progress(self):
         questions_map, questions_list = self.db_ctrl.get_questions_list()
 
-        progress_dialog = ProgressDialog(self.main_win, questions_map, questions_list, self.db_ctrl)
+        progress_dialog = ProgressDialog(self, questions_map, questions_list, self.db_ctrl)
 
         progress_dialog.setModal(False)
         progress_dialog.ui.label_correct.setText('')
@@ -315,69 +317,44 @@ class MainWindow:
         progress_dialog.show()
 
     def sync_progress(self):
+        server_address, class_key, ssl_set = self.app_settings.get_server_details()
+        first_name, surname, email = self.app_settings.get_user_details()
 
-        server_addr, class_key, ssl_set = self.app_settings.get_server_details()
-        firstname, surname, email = self.app_settings.get_user_details()
-        if ssl_set:
-            protocol = "https"
-            port = "443"
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        server_sync = ServerSync(
+            self,
+            (server_address, class_key, ssl_set),
+            (first_name, surname, email),
+            self.db_ctrl.get_sync_up_data(first_name, surname, email, self.app_settings.get_time_stamp()),
+            self.sync_results
+        )
+        server_sync.signals.result.connect(self.sync_return)
+
+        QThreadPool.globalInstance().start(server_sync)
+
+    def sync_return(self):
+        print("In Sync return")
+        if self.sync_results['successful']:
+            # Update timestamp from returned json
+            self.app_settings.set_time_stamp(self.sync_results['synced_down_data']["timestamp"])
+            # Mark all entries at synced
+            self.db_ctrl.mark_synced()
+            # insert new records.
+            self.db_ctrl.insert_synced_records(self.sync_results['synced_down_data']["results"])
+            # Change sync button to green if all completes successfully
+            self.ui.syncButton.setText("In Sync")
+            self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightgreen; color : black }")
         else:
-            protocol = "http"
-            port = "80"
+            # Dialog saying syn failed - with error
+            server_address, class_key, ssl_set = self.app_settings.get_server_details()
+            self.update_server_settings(server_address, class_key, ssl_set)
 
-        if len(server_addr) == 0:
-            self.update_server_settings(server_addr, class_key, ssl_set)
-            return
-
-        request_str = "{}://{}:{}/api/test?classcode={}".format(protocol, server_addr, port, class_key)
-        try:
-            request_data = requests.get(request_str)
-            request_data.raise_for_status()
-        except requests.HTTPError as http_err:
-            print('HTTP ERROR: {http_err}')
-            self.update_server_settings(server_addr, class_key, ssl_set)
-            return
-        except Exception as err:
-            print('Error: {err}')
-            self.update_server_settings(server_addr, class_key, ssl_set)
-            return
-        print("Test call successfull")
-
-        sync_up_data = self.db_ctrl.get_sync_up_data(firstname, surname, email, self.app_settings.get_time_stamp())
-        print(sync_up_data)
-
-        # Send all rows that are not marked as sync'd, send last sync time stamp (empty if never sync'd)
-        # On success, mark all entries in database as sync'd, then add all returned entries into the database (sync'd)
-        request_str = "{}://{}:{}/api/sync?classcode={}".format(protocol, server_addr, port, class_key)
-        try:
-            request_data = requests.post(request_str, json=sync_up_data)
-            request_data.raise_for_status()
-        except requests.HTTPError as http_err:
-            print('HTTP ERROR: {}'.format(http_err))
-            self.update_server_settings(server_addr, class_key, ssl_set)
-            return
-        except Exception as err:
-            print('Error: {}'.format(err))
-            self.update_server_settings(server_addr, class_key, ssl_set)
-            return
-
-        # Add rows to the database.
-        synced_down_data = request_data.json()
-        print(synced_down_data)
-
-        # Update timestamp from returned json
-        self.app_settings.set_time_stamp(synced_down_data["timestamp"])
-        # Mark all entries at synced
-        self.db_ctrl.mark_synced()
-        # insert new records.
-        self.db_ctrl.insert_synced_records(synced_down_data["results"])
-        # Change sync button to green if all completes successfully
-        self.ui.syncButton.setText("In Sync")
-        self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightgreen; color : black }")
+        QApplication.setOverrideCursor(Qt.ArrowCursor)
 
     def update_server_settings(self, server_address, class_key, ssl):
         # Show dialog with server settings, test settings and return true on success, false on fail
-        settings_dialog = SettingsDialog(self.main_win, self.app_settings, server_address, class_key, ssl)
+        settings_dialog = SettingsDialog(self, self.app_settings, server_address, class_key, ssl)
         settings_dialog.exec()
         self.ui.syncButton.setText("Sync with server")
         self.ui.syncButton.setStyleSheet(" QPushButton { background-color : lightsalmon; color : black }")
