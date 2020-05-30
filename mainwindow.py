@@ -45,6 +45,7 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("My Query Tutor - 2.3")
         self.ui.queryTextArea.setFontPointSize(15)
         self.app_settings = AppSettings()
         self.settings_cancelled = False
