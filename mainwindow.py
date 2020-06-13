@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import base64
 from bs4 import BeautifulSoup
 
 from PyQt5.Qt import QPixmap
@@ -37,10 +38,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.dir_path = os.path.dirname(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            self.dir_path = os.path.dirname(sys.executable)
+        else:
+            # The application is not frozen
+            self.dir_path = os.path.dirname(os.path.realpath(__file__))
 
         self.splash_screen = QSplashScreen()
-        self.splash_screen.setPixmap(QPixmap('splash.png'))
+        self.splash_screen.setPixmap(QPixmap(os.path.join(self.dir_path, 'splash.png')))
         self.splash_screen.show()
 
         self.ui = Ui_MainWindow()
@@ -283,22 +288,20 @@ class MainWindow(QMainWindow):
         # Replace relative path to absolute
         soup = BeautifulSoup(description, "html.parser")
         for img in soup.findAll('img'):
-            img['src'] = self.dir_path + os.sep + "images" + os.sep + img['src']
+            img['src'] = os.path.join(self.dir_path, "images", img['src'])
 
         for style in soup.find('style'):
             style_str = str(style)
             finds = re.findall('url\(.+?\)', style_str)
             for find in finds:
                 sub_str = find[5:-2]
-                if installer_building:
-                    directory_path = self.dir_path[2:]
-                    directory_path = directory_path.replace('\\', '/')
-                    directory_path = 'C:' + directory_path
-                else:
-                    directory_path = self.dir_path
-                new_url = 'url("file://' + directory_path + '/images/' + sub_str + '")'
+                file_type = os.path.splitext(sub_str)[1][1:]
+                image_path = os.path.join(self.dir_path, 'images', sub_str)
+                with open(image_path, "rb") as image_file:
+                    encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                    new_url = 'url("data:image/' + file_type + ' ;base64, ' + encoded_string + '")'
                 style_str = style_str.replace(find, new_url)
-            style.replaceWith(BeautifulSoup(style_str))
+            style.replaceWith(BeautifulSoup(style_str, features="html.parser"))
         description = str(soup)
 
         self.ui.questionTextArea.setHtml(description)

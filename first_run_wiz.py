@@ -1,7 +1,7 @@
 import os
 import re
 import shutil
-import pathlib
+import sys
 from PyQt5.QtCore import QStandardPaths
 from PyQt5.Qt import QWizardPage, QLabel, QGridLayout, QLineEdit, QPixmap, QCheckBox
 from PyQt5.QtWidgets import QWizard
@@ -15,11 +15,14 @@ class FirstRunWiz(QWizard):
         self.setButtonLayout(layout)
         self.setOptions(self.NoBackButtonOnStartPage)
 
+        if getattr(sys, 'frozen', False):
+            self.dir_path = os.path.dirname(sys.executable)
+        else:
+            self.dir_path = os.path.dirname(os.path.realpath(__file__))
+
         self.setWizardStyle(QWizard.ModernStyle)
         self.setWindowTitle("MQT First Run Wizard")
-        watermark_file = pathlib.Path(__file__).parent
-        watermark_file = os.path.join(watermark_file, 'watermark.png')
-        self.setPixmap(QWizard.WatermarkPixmap, QPixmap(watermark_file))
+        self.setPixmap(QWizard.WatermarkPixmap, QPixmap(os.path.join(self.dir_path, "watermark.png")))
 
         self.first_name = ''
         self.surname = ''
@@ -184,16 +187,17 @@ won't have to see this again :-D
 
         return all_cool
 
-    @staticmethod
-    def make_local_database():
-        src_db_file = pathlib.Path(__file__).parent
-        src_db_file = os.path.join(src_db_file, 'MQT_APP.sqlite')
+    def make_local_database(self):
+        src_db_file = os.path.join(self.dir_path, 'MQT_APP.sqlite')
         dir_path = QStandardPaths.writableLocation(QStandardPaths.AppLocalDataLocation)
         file_name = os.path.join(dir_path, 'MQT_APP.sqlite')
         shutil.copy(src_db_file, file_name)
 
-        src_db_file = pathlib.Path(__file__).parent
-        src_db_file = os.path.join(src_db_file, 'MQT_EX.sqlite')
+        src_db_file = os.path.join(self.dir_path, 'MQT_EX.sqlite')
         dir_path = QStandardPaths.writableLocation(QStandardPaths.AppLocalDataLocation)
         file_name = os.path.join(dir_path, 'MQT_EX.sqlite')
         shutil.copy(src_db_file, file_name)
+
+        src_dir = os.path.join(self.dir_path, 'images')
+        dst_dir = os.path.join(dir_path, 'images')
+        shutil.copytree(src_dir, dst_dir)
